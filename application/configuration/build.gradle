@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springboot_version}"
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencies {
+    compile project(":application:domain")
+    compile project(":application:dataprovider")
+    compile project(":application:gateway")
+
+    compile libs.spring_boot
+    compile libs.database_initialisation
+    compile libs.log
+
+    testCompile libs.unit_tests
+}

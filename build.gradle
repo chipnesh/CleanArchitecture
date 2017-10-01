@@ -1,0 +1,74 @@
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+
+buildscript {
+    ext {
+        kotlin_version = '1.1.50'
+        spring_version = "4.3.11.RELEASE"
+        springboot_version = "2.0.0.BUILD-SNAPSHOT"
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+configure(allprojects - project(":application")) {
+    apply plugin: 'kotlin'
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+subprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+    }
+
+    ext.libs = [
+            core                   : [
+                    "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+                    "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
+                    "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+            ],
+            spring_boot            : [
+                    "org.springframework.boot:spring-boot-starter-web:${springboot_version}",
+                    "org.springframework.boot:spring-boot-starter-actuator:${springboot_version}",
+                    "org.springframework.boot:spring-boot-starter-logging:${springboot_version}",
+            ],
+            rest                   : [
+                    "org.springframework:spring-web:${spring_version}"
+            ],
+            database               : [
+                    "org.springframework:spring-jdbc:${spring_version}"
+            ],
+            database_initialisation: [
+                    "org.springframework:spring-jdbc:${spring_version}",
+                    "com.h2database:h2:1.4.191"
+            ],
+            log                    : [
+                    "org.slf4j:slf4j-api:1.7.19"
+            ],
+            unit_tests             : [
+                    "org.junit.jupiter:junit-jupiter-api:5.0.0",
+                    "org.junit.platform:junit-platform-runner:1.0.0",
+                    "org.junit.jupiter:junit-jupiter-engine:5.0.0",
+                    "com.nhaarman:mockito-kotlin-kt1.1:1.5.0",
+                    "com.natpryce:hamkrest:1.4.2.0"
+            ]
+    ]
+}

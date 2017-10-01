@@ -1,0 +1,8 @@
+dependencies {
+    compile project(":application:domain")
+
+    compile libs.rest
+    compile libs.log
+
+    testCompile libs.unit_tests
+}

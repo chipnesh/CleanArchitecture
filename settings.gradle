@@ -1,0 +1,8 @@
+rootProject.name = 'cleanarch'
+
+include "application"
+include "application:domain"
+include "application:configuration"
+include "application:dataprovider"
+include "application:gateway"
+
