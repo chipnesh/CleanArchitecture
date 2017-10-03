@@ -4,8 +4,8 @@ import me.chipnesh.domain.account.GetAccountInfo
 import me.chipnesh.domain.account.RegisterAccount
 import me.chipnesh.domain.authentication.AuthenticateUser
 import me.chipnesh.domain.authentication.IsAuthenticated
-import me.chipnesh.gateway.rest.AccountController
-import me.chipnesh.gateway.rest.AuthenticationController
+import me.chipnesh.entrypoint.rest.AccountController
+import me.chipnesh.entrypoint.rest.AuthenticationController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

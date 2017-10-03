@@ -1,24 +1,25 @@
 package me.chipnesh.domain.authentication
 
-class IsAuthenticatedRequest(val login: String)
+import me.chipnesh.domain.UseCase
+import me.chipnesh.domain.Result
 
-sealed class IsAuthenticatedResponse(open val success: Boolean) {
-    data class Authenticated(val id: String) : IsAuthenticatedResponse(true)
-    data class NotAuthenticated(val message: String) : IsAuthenticatedResponse(false)
-}
+data class IsAuthenticatedRequest(val login: String)
+data class IsAuthenticatedResponse(val id: String)
 
-class IsAuthenticated(private val sessionsGateway: SessionsGateway) {
-    fun isAuthenticated(request: IsAuthenticatedRequest): IsAuthenticatedResponse {
+class IsAuthenticated(
+        private val sessionsGateway: SessionsGateway
+) : UseCase<IsAuthenticatedRequest, IsAuthenticatedResponse> {
+    override fun execute(request: IsAuthenticatedRequest): Result<IsAuthenticatedResponse> {
         val session = sessionsGateway.findActiveByLogin(request.login)
 
         return if (session == null) {
-            IsAuthenticatedResponse.NotAuthenticated("Session wasn't created")
+            Result.Failed("Session wasn't created")
         } else {
             return if (session.isExpired()) {
                 sessionsGateway.remove(session.id)
-                IsAuthenticatedResponse.NotAuthenticated("Session has expired")
+                Result.Failed("Session has expired")
             } else {
-                IsAuthenticatedResponse.Authenticated(session.id)
+                Result.Success(IsAuthenticatedResponse(session.id))
             }
         }
     }

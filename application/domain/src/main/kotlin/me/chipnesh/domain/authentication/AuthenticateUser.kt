@@ -1,37 +1,30 @@
 package me.chipnesh.domain.authentication
 
-import me.chipnesh.domain.Account
-import me.chipnesh.domain.Session
-import me.chipnesh.domain.ValidationResult
+import me.chipnesh.domain.*
 import me.chipnesh.domain.account.AccountsGateway
-import me.chipnesh.domain.md5Hash
 import java.time.LocalDateTime
 import java.util.*
 
-class AuthenticateUserRequest(val login: String, val password: String)
-
-sealed class AuthenticateUserResponse(val success: Boolean) {
-    data class Success(val id: String) : AuthenticateUserResponse(true)
-    data class Failed(val message: String) : AuthenticateUserResponse(false)
-}
+data class AuthenticateUserRequest(val login: String, val password: String)
+data class AuthenticateUserResponse(val id: String)
 
 class AuthenticateUser(
         private val sessionsGateway: SessionsGateway,
         private val accountsGateway: AccountsGateway,
         private val validateRequest: ValidateAuthenticateUserRequest
-) {
-    fun authenticate(request: AuthenticateUserRequest): AuthenticateUserResponse {
+) : UseCase<AuthenticateUserRequest, AuthenticateUserResponse> {
+    override fun execute(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
         val result = validateRequest.validate(request)
         return when (result) {
-            is ValidationResult.Invalid -> AuthenticateUserResponse.Failed(result.message)
+            is ValidationResult.Invalid -> Result.Failed(result.message)
             is ValidationResult.Valid -> {
                 val session = sessionsGateway.findActiveByLogin(request.login)
                 return if (session == null) {
                     val account = accountsGateway.findByLogin(request.login) ?:
-                            return AuthenticateUserResponse.Failed("Account with login '${request.login}' not found")
+                            return Result.Failed("Account with login '${request.login}' not found")
 
                     if (wrongPassword(account, request))
-                        return AuthenticateUserResponse.Failed("Wrong password")
+                        return Result.Failed("Wrong password")
 
                     createSession(request)
                 } else {
@@ -45,9 +38,9 @@ class AuthenticateUser(
     private fun wrongPassword(account: Account, request: AuthenticateUserRequest) =
             account.passwordHash != request.password.md5Hash()
 
-    private fun createSession(request: AuthenticateUserRequest): AuthenticateUserResponse.Success {
+    private fun createSession(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
         val id = sessionsGateway.add(newSession(request.login))
-        return AuthenticateUserResponse.Success(id)
+        return Result.Success(AuthenticateUserResponse(id))
     }
 
     private fun newSession(login: String): Session {

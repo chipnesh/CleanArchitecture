@@ -1,5 +1,6 @@
-package me.chipnesh.gateway.rest
+package me.chipnesh.entrypoint.rest
 
+import me.chipnesh.domain.Result
 import me.chipnesh.domain.account.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -31,19 +32,19 @@ class AccountController(
     @ResponseStatus(HttpStatus.CREATED)
     fun register(form: RegistrationForm): RegistrationResult {
         val request = RegisterAccountRequest(form.login, form.name, form.email, form.password)
-        val response = registerAccount.register(request)
+        val response = registerAccount.execute(request)
         return when (response) {
-            is RegisterAccountResponse.Success -> RegistrationResult.Success(response.id)
-            is RegisterAccountResponse.Failed -> RegistrationResult.Failed(response.message)
+            is Result.Success -> RegistrationResult.Success(response.result.id)
+            is Result.Failed -> RegistrationResult.Failed(response.message)
         }
     }
 
     @GetMapping
-    fun info(@RequestParam("login") login: String): AccountInfoResult {
-        val info = getAccountInfo.getInfo(GetAccountInfoRequest(login))
+    fun info(@RequestParam login: String): AccountInfoResult {
+        val info = getAccountInfo.execute(GetAccountInfoRequest(login))
         return when (info) {
-            is GetAccountInfoResponse.Success -> AccountInfoResult.Success(info.login, info.name, info.email)
-            is GetAccountInfoResponse.Failed -> AccountInfoResult.Failed(info.message)
+            is Result.Success -> AccountInfoResult.Success(info.result.login, info.result.name, info.result.email)
+            is Result.Failed -> AccountInfoResult.Failed(info.message)
         }
     }
 }

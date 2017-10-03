@@ -6,6 +6,7 @@ buildscript {
         kotlin_version = '1.1.50'
         spring_version = "4.3.11.RELEASE"
         springboot_version = "2.0.0.BUILD-SNAPSHOT"
+        thymeleaf_version = "3.0.6.M4"
     }
     repositories {
         mavenCentral()
@@ -55,6 +56,12 @@ subprojects {
             ],
             database               : [
                     "org.springframework:spring-jdbc:${spring_version}"
+            ],
+            template               : [
+                    "org.thymeleaf:thymeleaf-spring5:${thymeleaf_version}"
+            ],
+            email                  : [
+                    "org.springframework.boot:spring-boot-starter-mail:${springboot_version}"
             ],
             database_initialisation: [
                     "org.springframework:spring-jdbc:${spring_version}",

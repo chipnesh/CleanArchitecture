@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import me.chipnesh.domain.Account
+import me.chipnesh.domain.Result
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.platform.runner.JUnitPlatform
@@ -21,11 +22,11 @@ class GetAccountInfoTest {
     fun shouldReturnAccountInfo() {
         val expectedAccount = givenAnAccountIsFound()
 
-        val response = getAccountInfo.getInfo(GetAccountInfoRequest("1")) as GetAccountInfoResponse.Success
+        val response = getAccountInfo.execute(GetAccountInfoRequest("1")) as Result.Success
 
-        assertThat(response.login, equalTo(expectedAccount.login))
-        assertThat(response.email, equalTo(expectedAccount.email))
-        assertThat(response.name, equalTo(expectedAccount.name))
+        assertThat(response.result.login, equalTo(expectedAccount.login))
+        assertThat(response.result.email, equalTo(expectedAccount.email))
+        assertThat(response.result.name, equalTo(expectedAccount.name))
     }
 
     @Test
@@ -33,7 +34,7 @@ class GetAccountInfoTest {
     fun shouldReturnNotFoundMessage() {
         givenAnAccountIsNotFound()
 
-        val response = getAccountInfo.getInfo(GetAccountInfoRequest("1")) as GetAccountInfoResponse.Failed
+        val response = getAccountInfo.execute(GetAccountInfoRequest("1")) as Result.Failed
 
         assertThat(response.message, equalTo("User with login 1 is not found"))
     }

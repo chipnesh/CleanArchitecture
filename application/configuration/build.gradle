@@ -15,9 +15,11 @@ apply plugin: 'io.spring.dependency-management'
 dependencies {
     compile project(":application:domain")
     compile project(":application:dataprovider")
-    compile project(":application:gateway")
+    compile project(":application:entrypoint")
 
     compile libs.spring_boot
+    compile libs.template
+    compile libs.email
     compile libs.database_initialisation
     compile libs.log
 

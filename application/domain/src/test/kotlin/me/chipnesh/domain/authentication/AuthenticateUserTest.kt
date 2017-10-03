@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import me.chipnesh.domain.Account
+import me.chipnesh.domain.Result
 import me.chipnesh.domain.Session
 import me.chipnesh.domain.account.AccountsGateway
 import org.junit.jupiter.api.DisplayName
@@ -28,20 +29,20 @@ class AuthenticateUserTest {
         givenAnAccountIsFound()
         whenever(sessionGateway.add(any())).thenReturn("1")
 
-        val response = authenticateUser.authenticate(
+        val response = authenticateUser.execute(
                 AuthenticateUserRequest("login", "password")
-        ) as AuthenticateUserResponse.Success
+        ) as Result.Success
 
         assertThat(response.success, equalTo(true))
-        assertThat(response.id, equalTo("1"))
+        assertThat(response.result.id, equalTo("1"))
     }
 
     @Test
     @DisplayName("Should return failed with incorrect fields message")
     fun shouldReturnMessageWithIncorrectFields() {
-        val response = authenticateUser.authenticate(
+        val response = authenticateUser.execute(
                 AuthenticateUserRequest("", "43")
-        ) as AuthenticateUserResponse.Failed
+        ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
         assertThat(response.message, equalTo(arrayOf(
@@ -53,9 +54,9 @@ class AuthenticateUserTest {
     @Test
     @DisplayName("Should return failed with 'Account ... not found' message")
     fun shouldReturnAccountNotFound() {
-        val response = authenticateUser.authenticate(
+        val response = authenticateUser.execute(
                 AuthenticateUserRequest("johndoe", "123456")
-        ) as AuthenticateUserResponse.Failed
+        ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
         assertThat(response.message, equalTo("Account with login 'johndoe' not found"))
@@ -66,9 +67,9 @@ class AuthenticateUserTest {
     fun shouldReturnWrongPassword() {
         givenAnAccountIsFound()
 
-        val response = authenticateUser.authenticate(
+        val response = authenticateUser.execute(
                 AuthenticateUserRequest("login", "wrongpassword")
-        ) as AuthenticateUserResponse.Failed
+        ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
         assertThat(response.message, equalTo("Wrong password"))
@@ -81,12 +82,12 @@ class AuthenticateUserTest {
         givenSessionExists()
         whenever(sessionGateway.add(any())).thenReturn("2")
 
-        val response = authenticateUser.authenticate(
+        val response = authenticateUser.execute(
                 AuthenticateUserRequest("login", "password")
-        ) as AuthenticateUserResponse.Success
+        ) as Result.Success
 
         assertThat(response.success, equalTo(true))
-        assertThat(response.id, equalTo("2"))
+        assertThat(response.result.id, equalTo("2"))
     }
 
     private fun givenSessionExists() {

@@ -1,23 +1,18 @@
 package me.chipnesh.domain.account
 
-class GetAccountInfoRequest(val login: String)
+import me.chipnesh.domain.UseCase
+import me.chipnesh.domain.Result
 
-sealed class GetAccountInfoResponse {
-    data class Success(
-            val login: String,
-            val name: String,
-            val email: String
-    ): GetAccountInfoResponse()
-    data class Failed(val message: String): GetAccountInfoResponse()
-}
+data class GetAccountInfoRequest(val login: String)
+data class GetAccountInfoResponse(val login: String, val name: String, val email: String)
 
 class GetAccountInfo(
         private val accountsGateway: AccountsGateway
-) {
-    fun getInfo(request: GetAccountInfoRequest): GetAccountInfoResponse {
+) : UseCase<GetAccountInfoRequest, GetAccountInfoResponse> {
+    override fun execute(request: GetAccountInfoRequest): Result<GetAccountInfoResponse> {
         val account = accountsGateway.findByLogin(request.login) ?:
-                return GetAccountInfoResponse.Failed("User with login ${request.login} is not found")
+                return Result.Failed("User with login ${request.login} is not found")
 
-        return GetAccountInfoResponse.Success(account.login, account.name, account.email)
+        return Result.Success(GetAccountInfoResponse(account.login, account.name, account.email))
     }
 }
