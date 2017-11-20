@@ -11,21 +11,19 @@ data class AuthenticateUserResponse(val id: String)
 class AuthenticateUser(
         private val sessionsGateway: SessionsGateway,
         private val accountsGateway: AccountsGateway,
-        private val validateRequest: ValidateAuthenticateUserRequest
+        private val validateRequest: ValidateAuthenticationUserRequest
 ) : UseCase<AuthenticateUserRequest, AuthenticateUserResponse> {
+
     override fun execute(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
         val result = validateRequest.validate(request)
         return when (result) {
-            is ValidationResult.Invalid -> Result.Failed(result.message)
+            is ValidationResult.Invalid -> Result.Failed(result.messages)
             is ValidationResult.Valid -> {
                 val session = sessionsGateway.findActiveByLogin(request.login)
                 return if (session == null) {
                     val account = accountsGateway.findByLogin(request.login) ?:
                             return Result.Failed("Account with login '${request.login}' not found")
-
-                    if (wrongPassword(account, request))
-                        return Result.Failed("Wrong password")
-
+                    if (wrongPassword(account, request)) return Result.Failed("Wrong password")
                     createSession(request)
                 } else {
                     sessionsGateway.remove(session.id)

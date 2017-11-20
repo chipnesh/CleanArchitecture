@@ -2,6 +2,7 @@ package me.chipnesh.domain.account
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import me.chipnesh.domain.Account
@@ -36,7 +37,7 @@ class GetAccountInfoTest {
 
         val response = getAccountInfo.execute(GetAccountInfoRequest("1")) as Result.Failed
 
-        assertThat(response.message, equalTo("User with login 1 is not found"))
+        assertThat(response.messages, hasElement("User with login 1 is not found"))
     }
 
     private fun givenAnAccountIsFound(): Account {

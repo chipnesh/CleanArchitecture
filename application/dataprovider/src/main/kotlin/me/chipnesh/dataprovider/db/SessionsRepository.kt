@@ -22,17 +22,25 @@ class SessionsRepository(private val jdbcTemplate: JdbcTemplate) : SessionsGatew
         return session.id
     }
 
-    override fun findActiveByLogin(login: String): Session? {
+    override fun findActiveBySessionId(sessionId: String): Session? {
         return try {
-            findActiveByLoginOrThrow(login)
+            findActiveBy("id", sessionId)
         } catch (e: IncorrectResultSizeDataAccessException) {
             null
         }
     }
 
-    private fun findActiveByLoginOrThrow(login: String): Session? {
-        return jdbcTemplate.queryForObject("SELECT * FROM t_sessions WHERE login = ? AND active = TRUE",
-                arrayOf(login),
+    override fun findActiveByLogin(login: String): Session? {
+        return try {
+            findActiveBy("login", login)
+        } catch (e: IncorrectResultSizeDataAccessException) {
+            null
+        }
+    }
+
+    private fun findActiveBy(parameter: String, sessionId: String): Session? {
+        return jdbcTemplate.queryForObject("SELECT * FROM t_sessions WHERE $parameter = ? AND active = TRUE",
+                arrayOf(sessionId),
                 { rs: ResultSet, _: Int ->
                     Session(
                             rs.getString(1),

@@ -18,7 +18,7 @@ class SendNotification(
         return when (result) {
             is Result.Success -> {
                 notificationGateway.notify(request.to, result.result.template)
-                Result.Success(Unit)
+                Result.Success()
             }
             is Result.Failed -> result
         }

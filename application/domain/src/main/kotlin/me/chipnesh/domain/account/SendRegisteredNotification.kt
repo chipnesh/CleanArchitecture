@@ -10,12 +10,9 @@ data class SendRegisteredNotificationRequest(val to: String, val parameters: Map
 class SendRegisteredNotification(
         private val sendNotification: SendNotification
 ) : UseCase<SendRegisteredNotificationRequest, Unit> {
+
     override fun execute(request: SendRegisteredNotificationRequest): Result<Unit> {
         val notificationRequest = SendNotificationRequest(request.to, "registration", request.parameters)
-        val result = sendNotification.execute(notificationRequest)
-        return when(result) {
-            is Result.Success -> Result.Success(Unit)
-            is Result.Failed -> result
-        }
+        return sendNotification.execute(notificationRequest)
     }
 }

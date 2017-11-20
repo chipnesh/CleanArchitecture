@@ -1,7 +1,7 @@
 package me.chipnesh.domain.authentication
 
+import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -21,7 +21,7 @@ class AuthenticateUserTest {
 
     val sessionGateway = mock<SessionsGateway>()
     val accountsGateway = mock<AccountsGateway>()
-    val authenticateUser = AuthenticateUser(sessionGateway, accountsGateway, ValidateAuthenticateUserRequest())
+    val authenticateUser = AuthenticateUser(sessionGateway, accountsGateway, ValidateAuthenticationUserRequest())
 
     @Test
     @DisplayName("Should return success with session id")
@@ -45,10 +45,10 @@ class AuthenticateUserTest {
         ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo(arrayOf(
-                "Login is empty",
-                "Password should contain at least 6 chars"
-        ).joinToString()))
+        assertThat(response.messages,
+                hasElement("Login is empty")
+                and
+                hasElement("Password should contain at least 6 chars"))
     }
 
     @Test
@@ -59,7 +59,7 @@ class AuthenticateUserTest {
         ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo("Account with login 'johndoe' not found"))
+        assertThat(response.messages, hasElement("Account with login 'johndoe' not found"))
     }
 
     @Test
@@ -72,7 +72,7 @@ class AuthenticateUserTest {
         ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo("Wrong password"))
+        assertThat(response.messages, hasElement("Wrong password"))
     }
 
     @Test
@@ -92,7 +92,7 @@ class AuthenticateUserTest {
 
     private fun givenSessionExists() {
         val session = Session("1", "login", true, LocalDateTime.now())
-        whenever(sessionGateway.findActiveByLogin("login")).thenReturn(session)
+        whenever(sessionGateway.findActiveBySessionId("1")).thenReturn(session)
     }
 
     private fun givenAnAccountIsFound(): Account {

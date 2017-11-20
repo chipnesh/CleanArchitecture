@@ -2,6 +2,7 @@ package me.chipnesh.domain.authentication
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import me.chipnesh.domain.Result
@@ -24,7 +25,7 @@ class IsAuthenticatedTest {
         givenSessionExist(LocalDateTime.now().plusHours(1))
 
         val response = isAuthenticated.execute(
-                IsAuthenticatedRequest("login")
+                IsAuthenticatedRequest("1")
         ) as Result.Success
 
         assertThat(response.success, equalTo(true))
@@ -39,7 +40,7 @@ class IsAuthenticatedTest {
         ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo("Session wasn't created"))
+        assertThat(response.messages, hasElement("Not authenticated"))
     }
 
     @Test
@@ -48,15 +49,15 @@ class IsAuthenticatedTest {
         givenSessionExist(LocalDateTime.now().minusHours(1))
 
         val response = isAuthenticated.execute(
-                IsAuthenticatedRequest("login")
+                IsAuthenticatedRequest("1")
         ) as Result.Failed
 
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo("Session has expired"))
+        assertThat(response.messages, hasElement("Session expired"))
     }
 
     private fun givenSessionExist(expirationTime: LocalDateTime) {
         val session = Session("1", "login", true, expirationTime)
-        whenever(sessionGateway.findActiveByLogin("login")).thenReturn(session)
+        whenever(sessionGateway.findActiveBySessionId("1")).thenReturn(session)
     }
 }

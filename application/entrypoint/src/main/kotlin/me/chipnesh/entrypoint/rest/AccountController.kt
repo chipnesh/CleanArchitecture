@@ -14,11 +14,11 @@ data class RegistrationForm(
 
 sealed class RegistrationResult(val success: Boolean) {
     data class Success(val id: String): RegistrationResult(true)
-    data class Failed(val message: String): RegistrationResult(false)
+    data class Failed(val message: List<String>): RegistrationResult(false)
 }
 sealed class AccountInfoResult(val success: Boolean) {
     data class Success(val login: String, val name: String, val email: String) : AccountInfoResult(true)
-    data class Failed(val message: String) : AccountInfoResult(false)
+    data class Failed(val message: List<String>) : AccountInfoResult(false)
 }
 
 @RestController
@@ -35,7 +35,7 @@ class AccountController(
         val response = registerAccount.execute(request)
         return when (response) {
             is Result.Success -> RegistrationResult.Success(response.result.id)
-            is Result.Failed -> RegistrationResult.Failed(response.message)
+            is Result.Failed -> RegistrationResult.Failed(response.messages)
         }
     }
 
@@ -44,7 +44,7 @@ class AccountController(
         val info = getAccountInfo.execute(GetAccountInfoRequest(login))
         return when (info) {
             is Result.Success -> AccountInfoResult.Success(info.result.login, info.result.name, info.result.email)
-            is Result.Failed -> AccountInfoResult.Failed(info.message)
+            is Result.Failed -> AccountInfoResult.Failed(info.messages)
         }
     }
 }

@@ -1,11 +1,10 @@
 package me.chipnesh.configuration
 
-import me.chipnesh.dataprovider.file.TemplateStorage
 import me.chipnesh.domain.account.*
 import me.chipnesh.domain.authentication.AuthenticateUser
 import me.chipnesh.domain.authentication.IsAuthenticated
 import me.chipnesh.domain.authentication.SessionsGateway
-import me.chipnesh.domain.authentication.ValidateAuthenticateUserRequest
+import me.chipnesh.domain.authentication.ValidateAuthenticationUserRequest
 import me.chipnesh.domain.notification.NotificationGateway
 import me.chipnesh.domain.notification.SendNotification
 import me.chipnesh.domain.template.GetEmailTemplate
@@ -21,14 +20,14 @@ open class UseCase {
 
     @Bean
     open fun registerAccount(accountsGateway: AccountsGateway,
-                             validation: ValidateRegisterAccountRequest,
+                             validation: ValidateAccountRegistrationRequest,
                              sendRegisteredNotification: SendRegisteredNotification) =
             RegisterAccount(accountsGateway, validation, sendRegisteredNotification)
 
     @Bean
     open fun authenticateUser(sessionsGateway: SessionsGateway,
                               accountsGateway: AccountsGateway,
-                              validation: ValidateAuthenticateUserRequest) =
+                              validation: ValidateAuthenticationUserRequest) =
             AuthenticateUser(sessionsGateway, accountsGateway, validation)
 
     @Bean

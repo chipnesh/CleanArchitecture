@@ -1,7 +1,9 @@
 package me.chipnesh.domain.account
 
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -24,7 +26,7 @@ class RegisterAccountTest {
     val templateGateway = mock<TemplateGateway>()
     val registerAccount = RegisterAccount(
             accountsGateway,
-            ValidateRegisterAccountRequest(),
+            ValidateAccountRegistrationRequest(),
             SendRegisteredNotification(
                     SendNotification(notificationGateway, GetEmailTemplate(templateGateway))
             )
@@ -52,10 +54,11 @@ class RegisterAccountTest {
         val response = registerAccount.execute(RegisterAccountRequest("1", "", "", "123456")) as
                 Result.Failed
         assertThat(response.success, equalTo(false))
-        assertThat(response.message, equalTo(arrayOf(
-                "Name is empty",
-                "Email is empty"
-        ).joinToString()))
+        assertThat(response.messages,
+                hasElement("Name is empty")
+                and
+                hasElement("Email is empty")
+        )
     }
 
     private fun givenAnAccountIsFound(): Account {

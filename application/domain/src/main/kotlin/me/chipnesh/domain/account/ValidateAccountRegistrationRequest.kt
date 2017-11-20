@@ -4,7 +4,8 @@ import me.chipnesh.domain.ValidationResult
 import me.chipnesh.domain.check
 import me.chipnesh.domain.thenCheck
 
-class ValidateRegisterAccountRequest {
+class ValidateAccountRegistrationRequest {
+
     fun validate(request: RegisterAccountRequest): ValidationResult {
         return check(request.login.isNotBlank(), "Login is empty")
                 .thenCheck(request.name.isNotBlank(), "Name is empty")

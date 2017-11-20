@@ -8,31 +8,34 @@ data class RegisterAccountResponse(val id: String)
 
 class RegisterAccount(
         private val accountsGateway: AccountsGateway,
-        private val validateRequest: ValidateRegisterAccountRequest,
+        private val validateRegistrationRequest: ValidateAccountRegistrationRequest,
         private val sendRegisteredNotification: SendRegisteredNotification
 ) : UseCase<RegisterAccountRequest, RegisterAccountResponse> {
+
     override fun execute(request: RegisterAccountRequest): Result<RegisterAccountResponse> {
-        val result = validateRequest.validate(request)
+        val result = validateRegistrationRequest.validate(request)
         return when (result) {
-            is ValidationResult.Invalid -> Result.Failed(result.message)
+            is ValidationResult.Invalid -> Result.Failed(result.messages)
             is ValidationResult.Valid -> {
-                val id = UUID.randomUUID().toString()
-                val hash = request.password.md5Hash()
-
-                val user = Account(id, request.login, request.name, request.email, hash)
+                val user = createAccount(request)
                 val accountId = accountsGateway.add(user)
-
-                notifyRegistration(request)
+                notifyRegistration(user)
                 Result.Success(RegisterAccountResponse(accountId))
             }
         }
     }
 
-    private fun notifyRegistration(request: RegisterAccountRequest) {
-        val notificationRequest = SendRegisteredNotificationRequest(request.email,
+    private fun createAccount(request: RegisterAccountRequest): Account {
+        val id = UUID.randomUUID().toString()
+        val hash = request.password.md5Hash()
+        return Account(id, request.login, request.name, request.email, hash)
+    }
+
+    private fun notifyRegistration(account: Account) {
+        val notificationRequest = SendRegisteredNotificationRequest(account.email,
                 mapOf(
-                        "login" to request.login,
-                        "name" to request.name
+                        "login" to account.login,
+                        "name" to account.name
                 )
         )
         sendRegisteredNotification.execute(notificationRequest)
