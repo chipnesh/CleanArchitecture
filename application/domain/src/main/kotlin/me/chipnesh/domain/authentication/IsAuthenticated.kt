@@ -10,7 +10,7 @@ class IsAuthenticated(
         private val sessionsGateway: SessionsGateway
 ) : UseCase<IsAuthenticatedRequest, IsAuthenticatedResponse> {
 
-    override fun execute(request: IsAuthenticatedRequest): Result<IsAuthenticatedResponse> {
+    override suspend fun execute(request: IsAuthenticatedRequest): Result<IsAuthenticatedResponse> {
         val session = sessionsGateway.findActiveBySessionId(request.sessionId)
 
         return if (session == null) {

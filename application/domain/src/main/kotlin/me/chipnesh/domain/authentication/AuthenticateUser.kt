@@ -14,7 +14,7 @@ class AuthenticateUser(
         private val validateRequest: ValidateAuthenticationUserRequest
 ) : UseCase<AuthenticateUserRequest, AuthenticateUserResponse> {
 
-    override fun execute(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
+    override suspend fun execute(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
         val result = validateRequest.validate(request)
         return when (result) {
             is ValidationResult.Invalid -> Result.Failed(result.messages)

@@ -38,9 +38,9 @@ class SessionsRepository(private val jdbcTemplate: JdbcTemplate) : SessionsGatew
         }
     }
 
-    private fun findActiveBy(parameter: String, sessionId: String): Session? {
+    private fun findActiveBy(parameter: String, value: String): Session? {
         return jdbcTemplate.queryForObject("SELECT * FROM t_sessions WHERE $parameter = ? AND active = TRUE",
-                arrayOf(sessionId),
+                arrayOf(value),
                 { rs: ResultSet, _: Int ->
                     Session(
                             rs.getString(1),

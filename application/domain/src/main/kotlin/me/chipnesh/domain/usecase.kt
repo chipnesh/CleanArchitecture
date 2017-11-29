@@ -1,7 +1,7 @@
 package me.chipnesh.domain
 
 interface UseCase<in Request, out Response> {
-    fun execute(request: Request): Result<Response>
+    suspend fun execute(request: Request): Result<Response>
 }
 
 sealed class Result<out T>(val success: Boolean) {

@@ -20,7 +20,7 @@ class GetAccountInfoTest {
 
     @Test
     @DisplayName("Should return success response with account info")
-    fun shouldReturnAccountInfo() {
+    suspend fun shouldReturnAccountInfo() {
         val expectedAccount = givenAnAccountIsFound()
 
         val response = getAccountInfo.execute(GetAccountInfoRequest("1")) as Result.Success
@@ -32,7 +32,7 @@ class GetAccountInfoTest {
 
     @Test
     @DisplayName("Should return failed response if not found")
-    fun shouldReturnNotFoundMessage() {
+    suspend fun shouldReturnNotFoundMessage() {
         givenAnAccountIsNotFound()
 
         val response = getAccountInfo.execute(GetAccountInfoRequest("1")) as Result.Failed

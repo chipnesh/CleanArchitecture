@@ -34,7 +34,7 @@ class RegisterAccountTest {
 
     @Test
     @DisplayName("Should return success with account id")
-    fun shouldRegisterAccount() {
+    suspend fun shouldRegisterAccount() {
         val expectedAccount = givenAnAccountIsFound()
 
         val response = registerAccount.execute(RegisterAccountRequest(
@@ -50,7 +50,7 @@ class RegisterAccountTest {
 
     @Test
     @DisplayName("Should return message with incorrect fields")
-    fun shouldReturnIncorrectFormMessage() {
+    suspend fun shouldReturnIncorrectFormMessage() {
         val response = registerAccount.execute(RegisterAccountRequest("1", "", "", "123456")) as
                 Result.Failed
         assertThat(response.success, equalTo(false))

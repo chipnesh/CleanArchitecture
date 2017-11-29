@@ -21,7 +21,7 @@ class IsAuthenticatedTest {
 
     @Test
     @DisplayName("Should return success if session exist")
-    fun shouldReturnSessionId() {
+    suspend fun shouldReturnSessionId() {
         givenSessionExist(LocalDateTime.now().plusHours(1))
 
         val response = isAuthenticated.execute(
@@ -34,7 +34,7 @@ class IsAuthenticatedTest {
 
     @Test
     @DisplayName("Should return failed if session doesn't exist")
-    fun shouldReturnNotAuthenticated() {
+    suspend fun shouldReturnNotAuthenticated() {
         val response = isAuthenticated.execute(
                 IsAuthenticatedRequest("login")
         ) as Result.Failed
@@ -45,7 +45,7 @@ class IsAuthenticatedTest {
 
     @Test
     @DisplayName("Should return failed if session has expired")
-    fun shouldReturnSessionExpired() {
+    suspend fun shouldReturnSessionExpired() {
         givenSessionExist(LocalDateTime.now().minusHours(1))
 
         val response = isAuthenticated.execute(

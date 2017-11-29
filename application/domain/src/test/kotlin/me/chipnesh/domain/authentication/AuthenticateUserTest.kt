@@ -25,7 +25,7 @@ class AuthenticateUserTest {
 
     @Test
     @DisplayName("Should return success with session id")
-    fun shouldAuthenticateUser() {
+    suspend fun shouldAuthenticateUser() {
         givenAnAccountIsFound()
         whenever(sessionGateway.add(any())).thenReturn("1")
 
@@ -39,7 +39,7 @@ class AuthenticateUserTest {
 
     @Test
     @DisplayName("Should return failed with incorrect fields message")
-    fun shouldReturnMessageWithIncorrectFields() {
+    suspend fun shouldReturnMessageWithIncorrectFields() {
         val response = authenticateUser.execute(
                 AuthenticateUserRequest("", "43")
         ) as Result.Failed
@@ -53,7 +53,7 @@ class AuthenticateUserTest {
 
     @Test
     @DisplayName("Should return failed with 'Account ... not found' message")
-    fun shouldReturnAccountNotFound() {
+    suspend fun shouldReturnAccountNotFound() {
         val response = authenticateUser.execute(
                 AuthenticateUserRequest("johndoe", "123456")
         ) as Result.Failed
@@ -64,7 +64,7 @@ class AuthenticateUserTest {
 
     @Test
     @DisplayName("Should return failed with 'Wrong password' message")
-    fun shouldReturnWrongPassword() {
+    suspend fun shouldReturnWrongPassword() {
         givenAnAccountIsFound()
 
         val response = authenticateUser.execute(
@@ -77,7 +77,7 @@ class AuthenticateUserTest {
 
     @Test
     @DisplayName("Should return success with renewed session id")
-    fun shouldRenewSessionIfExist() {
+    suspend fun shouldRenewSessionIfExist() {
         givenAnAccountIsFound()
         givenSessionExists()
         whenever(sessionGateway.add(any())).thenReturn("2")

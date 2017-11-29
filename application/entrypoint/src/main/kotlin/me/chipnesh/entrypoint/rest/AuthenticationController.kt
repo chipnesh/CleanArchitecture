@@ -32,7 +32,7 @@ class AuthenticationController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun authenticate(form: AuthenticationForm): AuthenticationResult {
+    suspend fun authenticate(form: AuthenticationForm): AuthenticationResult {
         val request = AuthenticateUserRequest(form.login, form.password)
         val response = authenticateUser.execute(request)
         return when (response) {
@@ -42,7 +42,7 @@ class AuthenticationController(
     }
 
     @GetMapping
-    fun isAuthenticated(@RequestParam sessionId: String): IsAuthenticatedResult {
+    suspend fun isAuthenticated(@RequestParam sessionId: String): IsAuthenticatedResult {
         val request = IsAuthenticatedRequest(sessionId)
         val response = isAuthenticated.execute(request)
         return when (response) {

@@ -11,7 +11,7 @@ class SendRegisteredNotification(
         private val sendNotification: SendNotification
 ) : UseCase<SendRegisteredNotificationRequest, Unit> {
 
-    override fun execute(request: SendRegisteredNotificationRequest): Result<Unit> {
+    override suspend fun execute(request: SendRegisteredNotificationRequest): Result<Unit> {
         val notificationRequest = SendNotificationRequest(request.to, "registration", request.parameters)
         return sendNotification.execute(notificationRequest)
     }

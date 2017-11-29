@@ -12,7 +12,7 @@ class RegisterAccount(
         private val sendRegisteredNotification: SendRegisteredNotification
 ) : UseCase<RegisterAccountRequest, RegisterAccountResponse> {
 
-    override fun execute(request: RegisterAccountRequest): Result<RegisterAccountResponse> {
+    override suspend fun execute(request: RegisterAccountRequest): Result<RegisterAccountResponse> {
         val result = validateRegistrationRequest.validate(request)
         return when (result) {
             is ValidationResult.Invalid -> Result.Failed(result.messages)
@@ -31,7 +31,7 @@ class RegisterAccount(
         return Account(id, request.login, request.name, request.email, hash)
     }
 
-    private fun notifyRegistration(account: Account) {
+    private suspend fun notifyRegistration(account: Account) {
         val notificationRequest = SendRegisteredNotificationRequest(account.email,
                 mapOf(
                         "login" to account.login,

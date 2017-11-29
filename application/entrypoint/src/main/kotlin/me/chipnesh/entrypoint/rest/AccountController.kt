@@ -30,7 +30,7 @@ class AccountController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(form: RegistrationForm): RegistrationResult {
+    suspend fun register(form: RegistrationForm): RegistrationResult {
         val request = RegisterAccountRequest(form.login, form.name, form.email, form.password)
         val response = registerAccount.execute(request)
         return when (response) {
@@ -40,7 +40,7 @@ class AccountController(
     }
 
     @GetMapping
-    fun info(@RequestParam login: String): AccountInfoResult {
+    suspend fun info(@RequestParam login: String): AccountInfoResult {
         val info = getAccountInfo.execute(GetAccountInfoRequest(login))
         return when (info) {
             is Result.Success -> AccountInfoResult.Success(info.result.login, info.result.name, info.result.email)

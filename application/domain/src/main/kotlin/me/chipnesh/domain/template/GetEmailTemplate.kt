@@ -10,7 +10,7 @@ class GetEmailTemplate(
         private val templateGateway: TemplateGateway
 ) : UseCase<GetEmailTemplateRequest, GetEmailTemplateResponse> {
 
-    override fun execute(request: GetEmailTemplateRequest): Result<GetEmailTemplateResponse> {
+    override suspend fun execute(request: GetEmailTemplateRequest): Result<GetEmailTemplateResponse> {
         val template = templateGateway.buildTemplate(request.name, request.parameters)
         return if (template != null) {
             Result.Success(GetEmailTemplateResponse(template))

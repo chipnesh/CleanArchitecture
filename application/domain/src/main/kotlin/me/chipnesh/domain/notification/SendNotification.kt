@@ -12,7 +12,7 @@ class SendNotification(
         private val getEmailTemplate: GetEmailTemplate
 ) : UseCase<SendNotificationRequest, Unit> {
 
-    override fun execute(request: SendNotificationRequest): Result<Unit> {
+    override suspend fun execute(request: SendNotificationRequest): Result<Unit> {
         val getEmailTemplateRequest = GetEmailTemplateRequest(request.template, request.parameters)
         val result = getEmailTemplate.execute(getEmailTemplateRequest)
         return when (result) {
