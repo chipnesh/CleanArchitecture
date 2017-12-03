@@ -4,18 +4,28 @@ import me.chipnesh.domain.account.GetAccountInfo
 import me.chipnesh.domain.account.RegisterAccount
 import me.chipnesh.domain.authentication.AuthenticateUser
 import me.chipnesh.domain.authentication.IsAuthenticated
-import me.chipnesh.entrypoint.rest.AccountController
-import me.chipnesh.entrypoint.rest.AuthenticationController
+import me.chipnesh.domain.quote.GetChuckNorrisQuote
+import me.chipnesh.entrypoint.rest.AccountEndpoint
+import me.chipnesh.entrypoint.rest.AuthenticationEndpoint
+import me.chipnesh.entrypoint.rest.ExceptionHandler
+import me.chipnesh.entrypoint.rest.QuoteEndpoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 open class Rest {
     @Bean
-    open fun accountController(registerAccount: RegisterAccount, getAccountInfo: GetAccountInfo)
-            = AccountController(registerAccount, getAccountInfo)
+    open fun accountEndpoint(registerAccount: RegisterAccount, getAccountInfo: GetAccountInfo)
+            = AccountEndpoint(registerAccount, getAccountInfo)
 
     @Bean
-    open fun authenticationController(authenticateUser: AuthenticateUser, isAuthenticated: IsAuthenticated)
-            = AuthenticationController(authenticateUser, isAuthenticated)
+    open fun authenticationEndpoint(authenticateUser: AuthenticateUser, isAuthenticated: IsAuthenticated)
+            = AuthenticationEndpoint(authenticateUser, isAuthenticated)
+
+    @Bean
+    open fun quoteEndpoint(getChuckNorrisQuote: GetChuckNorrisQuote)
+            = QuoteEndpoint(getChuckNorrisQuote)
+
+    @Bean
+    open fun exceptionHandler() = ExceptionHandler()
 }

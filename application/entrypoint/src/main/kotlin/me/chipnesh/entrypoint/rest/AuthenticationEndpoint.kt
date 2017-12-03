@@ -6,6 +6,8 @@ import me.chipnesh.domain.authentication.AuthenticateUserRequest
 import me.chipnesh.domain.authentication.IsAuthenticated
 import me.chipnesh.domain.authentication.IsAuthenticatedRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE
 import org.springframework.web.bind.annotation.*
 
 data class AuthenticationForm(
@@ -24,8 +26,8 @@ sealed class IsAuthenticatedResult(val success: Boolean) {
 }
 
 @RestController
-@RequestMapping("/authentication")
-class AuthenticationController(
+@RequestMapping(value = ["/authentication"], produces = [APPLICATION_JSON_UTF8_VALUE])
+class AuthenticationEndpoint(
         private val authenticateUser: AuthenticateUser,
         private val isAuthenticated: IsAuthenticated
 ) {

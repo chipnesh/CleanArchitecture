@@ -8,7 +8,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import me.chipnesh.domain.Account
 import me.chipnesh.domain.Result
 import me.chipnesh.domain.Session
-import me.chipnesh.domain.account.AccountsGateway
+import me.chipnesh.domain.account.Accounts
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.platform.runner.JUnitPlatform
@@ -19,15 +19,16 @@ import java.time.LocalDateTime
 @RunWith(JUnitPlatform::class)
 class AuthenticateUserTest {
 
-    val sessionGateway = mock<SessionsGateway>()
-    val accountsGateway = mock<AccountsGateway>()
+    val sessionGateway = mock<Sessions>()
+    val accountsGateway = mock<Accounts>()
     val authenticateUser = AuthenticateUser(sessionGateway, accountsGateway, ValidateAuthenticationUserRequest())
 
     @Test
     @DisplayName("Should return success with session id")
     suspend fun shouldAuthenticateUser() {
         givenAnAccountIsFound()
-        whenever(sessionGateway.add(any())).thenReturn("1")
+        whenever(sessionGateway.save(any()))
+                .thenReturn(Session("1", "login", true, LocalDateTime.now()))
 
         val response = authenticateUser.execute(
                 AuthenticateUserRequest("login", "password")
@@ -80,7 +81,8 @@ class AuthenticateUserTest {
     suspend fun shouldRenewSessionIfExist() {
         givenAnAccountIsFound()
         givenSessionExists()
-        whenever(sessionGateway.add(any())).thenReturn("2")
+        whenever(sessionGateway.save(any()))
+                .thenReturn(Session("2", "login", true, LocalDateTime.now()))
 
         val response = authenticateUser.execute(
                 AuthenticateUserRequest("login", "password")
@@ -90,12 +92,12 @@ class AuthenticateUserTest {
         assertThat(response.result.id, equalTo("2"))
     }
 
-    private fun givenSessionExists() {
+    private suspend fun givenSessionExists() {
         val session = Session("1", "login", true, LocalDateTime.now())
-        whenever(sessionGateway.findActiveBySessionId("1")).thenReturn(session)
+        whenever(sessionGateway.findActiveById("1")).thenReturn(session)
     }
 
-    private fun givenAnAccountIsFound(): Account {
+    private suspend fun givenAnAccountIsFound(): Account {
         val account = Account("1", "login", "name", "login@mail.ru", "5f4dcc3b5aa765d61d8327deb882cf99")
         whenever(accountsGateway.findByLogin("login")).thenReturn(account)
         return account

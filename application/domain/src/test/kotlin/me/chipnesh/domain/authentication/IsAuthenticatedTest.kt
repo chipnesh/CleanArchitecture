@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 @DisplayName("Test 'is authenticated' use case")
 @RunWith(JUnitPlatform::class)
 class IsAuthenticatedTest {
-    val sessionGateway = mock<SessionsGateway>()
+    val sessionGateway = mock<Sessions>()
     val isAuthenticated = IsAuthenticated(sessionGateway)
 
     @Test
@@ -56,8 +56,8 @@ class IsAuthenticatedTest {
         assertThat(response.messages, hasElement("Session expired"))
     }
 
-    private fun givenSessionExist(expirationTime: LocalDateTime) {
+    private suspend fun givenSessionExist(expirationTime: LocalDateTime) {
         val session = Session("1", "login", true, expirationTime)
-        whenever(sessionGateway.findActiveBySessionId("1")).thenReturn(session)
+        whenever(sessionGateway.findActiveById("1")).thenReturn(session)
     }
 }

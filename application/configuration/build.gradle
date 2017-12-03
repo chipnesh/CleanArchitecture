@@ -2,9 +2,11 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://repo.spring.io/libs-snapshot' }
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springboot_version}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
         classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
     }
 }
@@ -20,7 +22,6 @@ dependencies {
     compile libs.spring_boot
     compile libs.template
     compile libs.email
-    compile libs.database_initialisation
     compile libs.log
 
     testCompile libs.unit_tests

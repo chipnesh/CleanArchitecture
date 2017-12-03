@@ -7,7 +7,7 @@ data class RegisterAccountRequest(val login: String, val name: String, val email
 data class RegisterAccountResponse(val id: String)
 
 class RegisterAccount(
-        private val accountsGateway: AccountsGateway,
+        private val accounts: Accounts,
         private val validateRegistrationRequest: ValidateAccountRegistrationRequest,
         private val sendRegisteredNotification: SendRegisteredNotification
 ) : UseCase<RegisterAccountRequest, RegisterAccountResponse> {
@@ -18,7 +18,7 @@ class RegisterAccount(
             is ValidationResult.Invalid -> Result.Failed(result.messages)
             is ValidationResult.Valid -> {
                 val user = createAccount(request)
-                val accountId = accountsGateway.add(user)
+                val accountId = accounts.save(user).id
                 notifyRegistration(user)
                 Result.Success(RegisterAccountResponse(accountId))
             }

@@ -1,7 +1,7 @@
 package me.chipnesh.domain.authentication
 
 import me.chipnesh.domain.*
-import me.chipnesh.domain.account.AccountsGateway
+import me.chipnesh.domain.account.Accounts
 import java.time.LocalDateTime
 import java.util.*
 
@@ -9,8 +9,8 @@ data class AuthenticateUserRequest(val login: String, val password: String)
 data class AuthenticateUserResponse(val id: String)
 
 class AuthenticateUser(
-        private val sessionsGateway: SessionsGateway,
-        private val accountsGateway: AccountsGateway,
+        private val sessions: Sessions,
+        private val accounts: Accounts,
         private val validateRequest: ValidateAuthenticationUserRequest
 ) : UseCase<AuthenticateUserRequest, AuthenticateUserResponse> {
 
@@ -19,14 +19,14 @@ class AuthenticateUser(
         return when (result) {
             is ValidationResult.Invalid -> Result.Failed(result.messages)
             is ValidationResult.Valid -> {
-                val session = sessionsGateway.findActiveByLogin(request.login)
+                val session = sessions.findActiveByLogin(request.login)
                 return if (session == null) {
-                    val account = accountsGateway.findByLogin(request.login) ?:
+                    val account = accounts.findByLogin(request.login) ?:
                             return Result.Failed("Account with login '${request.login}' not found")
                     if (wrongPassword(account, request)) return Result.Failed("Wrong password")
                     createSession(request)
                 } else {
-                    sessionsGateway.remove(session.id)
+                    sessions.delete(session)
                     createSession(request)
                 }
             }
@@ -36,8 +36,8 @@ class AuthenticateUser(
     private fun wrongPassword(account: Account, request: AuthenticateUserRequest) =
             account.passwordHash != request.password.md5Hash()
 
-    private fun createSession(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
-        val id = sessionsGateway.add(newSession(request.login))
+    private suspend fun createSession(request: AuthenticateUserRequest): Result<AuthenticateUserResponse> {
+        val id = sessions.save(newSession(request.login)).id
         return Result.Success(AuthenticateUserResponse(id))
     }
 

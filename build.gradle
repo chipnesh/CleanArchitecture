@@ -3,17 +3,25 @@ apply plugin: 'idea'
 
 buildscript {
     ext {
-        kotlin_version = '1.1.50'
-        spring_version = "4.3.11.RELEASE"
-        springboot_version = "2.0.0.BUILD-SNAPSHOT"
-        thymeleaf_version = "3.0.6.M4"
+        kotlin_version = '1.2.0'
+        kotlin_coroutines_version = "0.19.2"
+        spring_version = "5.0.0.RELEASE"
+        spring_data_version = "2.0.0.RELEASE"
+        spring_boot_version = "2.0.0.M5"
+        spring_coroutine = "0.3.1"
     }
     repositories {
         mavenCentral()
         jcenter()
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+        maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
+        classpath "com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3"
     }
 }
 
@@ -38,34 +46,64 @@ subprojects {
         mavenLocal()
         mavenCentral()
         maven { url 'https://repo.spring.io/libs-snapshot' }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://dl.bintray.com/konrad-kaminski/maven' }
+    }
+
+    kotlin {
+        experimental {
+            coroutines "enable"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 
     ext.libs = [
             core                   : [
                     "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
                     "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
-                    "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+                    "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version",
+                    "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
             ],
             spring_boot            : [
-                    "org.springframework.boot:spring-boot-starter-web:${springboot_version}",
-                    "org.springframework.boot:spring-boot-starter-actuator:${springboot_version}",
-                    "org.springframework.boot:spring-boot-starter-logging:${springboot_version}",
+                    "org.springframework.boot:spring-boot-configuration-processor:$spring_boot_version",
+                    "org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version",
+                    "org.springframework.boot:spring-boot-starter-logging:$spring_boot_version",
+                    "org.springframework.kotlin:spring-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework.kotlin:spring-data-mongodb-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework.kotlin:spring-boot-autoconfigure-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework:spring-context-support:$spring_version",
+                    "org.springframework:spring-webflux:$spring_version"
             ],
             rest                   : [
-                    "org.springframework:spring-web:${spring_version}"
+                    "org.springframework:spring-context-support:$spring_version",
+                    "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version",
+                    "org.springframework.kotlin:spring-webflux-kotlin-coroutine:$spring_coroutine",
             ],
-            database               : [
-                    "org.springframework:spring-jdbc:${spring_version}"
+            dataprovider               : [
+                    "org.springframework.data:spring-data-mongodb:$spring_data_version",
+                    "org.springframework.kotlin:spring-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework.kotlin:spring-data-mongodb-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework.kotlin:spring-boot-autoconfigure-kotlin-coroutine:$spring_coroutine",
+                    "org.springframework.kotlin:spring-webflux-kotlin-coroutine:$spring_coroutine",
+                    "org.mongodb:mongodb-driver-reactivestreams:1.6.0"
             ],
             template               : [
-                    "org.thymeleaf:thymeleaf-spring5:${thymeleaf_version}"
+                    "org.springframework.boot:spring-boot-starter-thymeleaf:$spring_boot_version"
             ],
             email                  : [
-                    "org.springframework.boot:spring-boot-starter-mail:${springboot_version}"
-            ],
-            database_initialisation: [
-                    "org.springframework:spring-jdbc:${spring_version}",
-                    "com.h2database:h2:1.4.191"
+                    "org.springframework.boot:spring-boot-starter-mail:$spring_boot_version"
             ],
             log                    : [
                     "org.slf4j:slf4j-api:1.7.19"
@@ -75,7 +113,10 @@ subprojects {
                     "org.junit.platform:junit-platform-runner:1.0.0",
                     "org.junit.jupiter:junit-jupiter-engine:5.0.0",
                     "com.nhaarman:mockito-kotlin-kt1.1:1.5.0",
-                    "com.natpryce:hamkrest:1.4.2.0"
+                    "com.natpryce:hamkrest:1.4.2.0",
+                    "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version",
+                    "org.springframework.boot:spring-boot-starter-test:$spring_boot_version",
+                    "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
             ]
     ]
 }

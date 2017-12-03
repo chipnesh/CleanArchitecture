@@ -3,46 +3,52 @@ package me.chipnesh.configuration
 import me.chipnesh.domain.account.*
 import me.chipnesh.domain.authentication.AuthenticateUser
 import me.chipnesh.domain.authentication.IsAuthenticated
-import me.chipnesh.domain.authentication.SessionsGateway
+import me.chipnesh.domain.authentication.Sessions
 import me.chipnesh.domain.authentication.ValidateAuthenticationUserRequest
-import me.chipnesh.domain.notification.NotificationGateway
+import me.chipnesh.domain.notification.Notifications
 import me.chipnesh.domain.notification.SendNotification
+import me.chipnesh.domain.quote.GetChuckNorrisQuote
+import me.chipnesh.domain.quote.Quotes
 import me.chipnesh.domain.template.GetEmailTemplate
-import me.chipnesh.domain.template.TemplateGateway
+import me.chipnesh.domain.template.Templates
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 open class UseCase {
     @Bean
-    open fun getAccountInfo(accountsGateway: AccountsGateway)
-            = GetAccountInfo(accountsGateway)
+    open fun getAccountInfo(accounts: Accounts)
+            = GetAccountInfo(accounts)
 
     @Bean
-    open fun registerAccount(accountsGateway: AccountsGateway,
+    open fun registerAccount(accounts: Accounts,
                              validation: ValidateAccountRegistrationRequest,
                              sendRegisteredNotification: SendRegisteredNotification) =
-            RegisterAccount(accountsGateway, validation, sendRegisteredNotification)
+            RegisterAccount(accounts, validation, sendRegisteredNotification)
 
     @Bean
-    open fun authenticateUser(sessionsGateway: SessionsGateway,
-                              accountsGateway: AccountsGateway,
+    open fun authenticateUser(sessions: Sessions,
+                              accounts: Accounts,
                               validation: ValidateAuthenticationUserRequest) =
-            AuthenticateUser(sessionsGateway, accountsGateway, validation)
+            AuthenticateUser(sessions, accounts, validation)
 
     @Bean
-    open fun isAuthenticated(sessionsGateway: SessionsGateway)
-            = IsAuthenticated(sessionsGateway)
+    open fun isAuthenticated(sessions: Sessions)
+            = IsAuthenticated(sessions)
 
     @Bean
     open fun sendRegisteredNotification(sendNotification: SendNotification)
             = SendRegisteredNotification(sendNotification)
     @Bean
     open fun sendNotification(getEmailTemplate: GetEmailTemplate,
-                              notificationGateway: NotificationGateway)
-            = SendNotification(notificationGateway, getEmailTemplate)
+                              notifications: Notifications)
+            = SendNotification(notifications, getEmailTemplate)
 
     @Bean
-    open fun getEmailTemplate(templateGateway: TemplateGateway)
-            = GetEmailTemplate(templateGateway)
+    open fun getEmailTemplate(templates: Templates)
+            = GetEmailTemplate(templates)
+
+    @Bean
+    open fun getChuckNorrisEndpoint(quotes: Quotes)
+            = GetChuckNorrisQuote(quotes)
 }

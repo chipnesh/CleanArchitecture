@@ -7,17 +7,17 @@ data class IsAuthenticatedRequest(val sessionId: String)
 data class IsAuthenticatedResponse(val id: String)
 
 class IsAuthenticated(
-        private val sessionsGateway: SessionsGateway
+        private val sessions: Sessions
 ) : UseCase<IsAuthenticatedRequest, IsAuthenticatedResponse> {
 
     override suspend fun execute(request: IsAuthenticatedRequest): Result<IsAuthenticatedResponse> {
-        val session = sessionsGateway.findActiveBySessionId(request.sessionId)
+        val session = sessions.findActiveById(request.sessionId)
 
         return if (session == null) {
             Result.Failed("Not authenticated")
         } else {
             return if (session.isExpired()) {
-                sessionsGateway.remove(session.id)
+                sessions.delete(session)
                 Result.Failed("Session expired")
             } else {
                 Result.Success(IsAuthenticatedResponse(session.id))

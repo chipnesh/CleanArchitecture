@@ -1,7 +1,7 @@
 apply plugin: 'kotlin'
 dependencies {
     compile project(":application:domain")
-    compile libs.database
+    compile libs.dataprovider
     compile libs.template
     compile libs.email
 

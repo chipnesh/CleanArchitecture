@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 @RunWith(JUnitPlatform::class)
 class GetAccountInfoTest {
 
-    val accountsGateway = mock<AccountsGateway>()
+    val accountsGateway = mock<Accounts>()
     val getAccountInfo = GetAccountInfo(accountsGateway)
 
     @Test
@@ -40,13 +40,13 @@ class GetAccountInfoTest {
         assertThat(response.messages, hasElement("User with login 1 is not found"))
     }
 
-    private fun givenAnAccountIsFound(): Account {
+    private suspend fun givenAnAccountIsFound(): Account {
         val account = Account("1", "login", "name", "login@mail.ru", "1")
         whenever(accountsGateway.findByLogin("1")).thenReturn(account)
         return account
     }
 
-    private fun givenAnAccountIsNotFound() {
+    private suspend fun givenAnAccountIsNotFound() {
         whenever(accountsGateway.findByLogin("1")).thenReturn(null)
     }
 }

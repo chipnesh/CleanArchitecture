@@ -18,3 +18,7 @@ data class Account(
         val email: String,
         val passwordHash: String
 )
+
+data class Quote(
+        val text: String
+)

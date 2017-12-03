@@ -8,7 +8,7 @@ import me.chipnesh.domain.template.GetEmailTemplateRequest
 data class SendNotificationRequest(val to: String, val template: String, val parameters: Map<String, Any>)
 
 class SendNotification(
-        private val notificationGateway: NotificationGateway,
+        private val notifications: Notifications,
         private val getEmailTemplate: GetEmailTemplate
 ) : UseCase<SendNotificationRequest, Unit> {
 
@@ -17,7 +17,7 @@ class SendNotification(
         val result = getEmailTemplate.execute(getEmailTemplateRequest)
         return when (result) {
             is Result.Success -> {
-                notificationGateway.notify(request.to, result.result.template)
+                notifications.sendNotification(request.to, result.result.template)
                 Result.Success()
             }
             is Result.Failed -> result
