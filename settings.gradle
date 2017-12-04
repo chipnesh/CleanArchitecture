@@ -6,4 +6,5 @@ include "application:configuration"
 include "application:dataprovider"
 include "application:entrypoint"
 include "application:contract"
+include "application:presentation"
 

@@ -1,4 +1,3 @@
-apply plugin: 'kotlin'
 dependencies {
     compile project(":application:domain")
     compile libs.dataprovider

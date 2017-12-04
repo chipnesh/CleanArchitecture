@@ -1,0 +1,67 @@
+apply plugin: 'kotlin2js'
+apply plugin: "kotlin-dce-js"
+apply plugin: "com.moowork.node"
+apply plugin: 'kotlin-platform-js'
+apply plugin: 'org.jetbrains.kotlin.frontend'
+
+dependencies {
+    expectedBy project(":application:contract")
+    compile libs.presentation
+    testCompile libs.presentation_test
+}
+
+node {
+    download = true
+}
+
+compileKotlin2Js {
+    kotlinOptions {
+        metaInfo = true
+        outputFile = "$project.buildDir.path/js/${project.name}.js"
+        sourceMap = true
+        moduleKind = 'commonjs'
+        main = "call"
+    }
+}
+
+compileTestKotlin2Js {
+    kotlinOptions {
+        metaInfo = true
+        outputFile = "$project.buildDir.path/js-tests/${project.name}-tests.js"
+        sourceMap = true
+        moduleKind = 'commonjs'
+        main = "call"
+    }
+}
+
+kotlinFrontend {
+    npm {
+        dependency "rmwc"
+        dependency "react"
+        dependency "axios"
+        dependency "react-dom"
+        dependency "react-redux"
+        dependency "react-router"
+        dependency "react-router-redux"
+        dependency "react-router-dom"
+        dependency "history"
+        dependency "redux"
+        dependency "redux-thunk"
+        dependency "style-loader"
+
+        devDependency "karma"
+    }
+    webpackBundle {
+        bundleName = 'presentation'
+        contentPath = file('src/main/web')
+        sourceMapEnabled = true
+        publicPath = "/"
+        port = 7777
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

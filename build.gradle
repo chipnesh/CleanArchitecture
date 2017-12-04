@@ -4,34 +4,58 @@ apply plugin: 'idea'
 buildscript {
     ext {
         kotlin_version = '1.2.0'
-        kotlin_coroutines_version = "0.19.2"
+        kotlin_coroutines_version = "0.19.3"
+        serialization_version = "0.2"
         spring_version = "5.0.0.RELEASE"
         spring_data_version = "2.0.0.RELEASE"
         spring_boot_version = "2.0.0.M5"
         spring_coroutine = "0.3.1"
+        frontend_plugin_version = "0.0.23"
+        react_version = "16.0.0-pre.13-kotlin-1.2.0"
+        react_dom_version = "16.0.0-pre.13-kotlin-1.2.0"
+        kotlin_extensions = "1.0.0-pre.13-kotlin-1.2.0"
+        kotlin_mocha = "3.0.0-pre.13-kotlin-1.2.0"
+        kotlinx_html_version = "bootstrap-1.1.50-dev-1182-69"
+        kotlin_rmwc_version = "-SNAPSHOT"
     }
     repositories {
         mavenCentral()
         jcenter()
-        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
         maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+        maven { url 'https://repo.spring.io/plugins-release' }
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven { url "https://kotlin.bintray.com/kotlinx" }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+        classpath "org.jetbrains.kotlinx:kotlinx-gradle-serialization-plugin:$serialization_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
-        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
-        classpath "com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3"
+        classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:0.0.25"
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
     }
 }
 
 configure(allprojects - project(":application")) {
-    apply plugin: 'kotlin'
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
     }
+
+    if (project != project(":application:contract") &&
+        project != project(":application:presentation")) {
+        apply plugin: 'kotlin'
+    }
+
+    kotlin {
+        experimental {
+            coroutines "enable"
+        }
+    }
+    compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
+    compileKotlin.kotlinOptions.jvmTarget = "1.8"
 }
 
 idea {
@@ -45,26 +69,16 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url 'https://repo.spring.io/libs-snapshot' }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url 'http://repo.spring.io/libs-snapshot' }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-dev" }
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
-        maven { url "https://repo.spring.io/milestone" }
-        maven { url 'https://dl.bintray.com/konrad-kaminski/maven' }
-    }
-
-    kotlin {
-        experimental {
-            coroutines "enable"
-        }
-    }
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
+        maven { url "http://dl.bintray.com/kotlinx/kotlinx" }
+        maven { url "http://dl.bintray.com/hypnosphi/kotlin-wrappers" }
+        maven { url 'http://dl.bintray.com/konrad-kaminski/maven' }
+        maven { url "http://kotlin.bintray.com/kotlinx" }
+        maven { url "http://kotlin.bintray.com/kotlin-js-wrappers" }
+        maven { url 'https://jitpack.io' }
     }
 
     ext.libs = [
@@ -91,7 +105,7 @@ subprojects {
                     "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version",
                     "org.springframework.kotlin:spring-webflux-kotlin-coroutine:$spring_coroutine",
             ],
-            dataprovider               : [
+            dataprovider           : [
                     "org.springframework.data:spring-data-mongodb:$spring_data_version",
                     "org.springframework.kotlin:spring-kotlin-coroutine:$spring_coroutine",
                     "org.springframework.kotlin:spring-data-mongodb-kotlin-coroutine:$spring_coroutine",
@@ -101,6 +115,24 @@ subprojects {
             ],
             template               : [
                     "org.springframework.boot:spring-boot-starter-thymeleaf:$spring_boot_version"
+            ],
+            contract               : [
+                    "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version",
+                    "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
+            ],
+            presentation           : [
+                    "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_version",
+                    "org.jetbrains:kotlin-react:$react_version",
+                    "org.jetbrains:kotlin-extensions:$kotlin_extensions",
+                    "org.jetbrains:kotlin-mocha:$kotlin_mocha",
+                    "org.jetbrains:kotlin-react-dom:$react_dom_version",
+                    "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version",
+                    "org.jetbrains.kotlinx:kotlinx-html-js:$kotlinx_html_version",
+                    "com.github.rivasdiaz:kotlin-rmwc:$kotlin_rmwc_version"
+
+            ],
+            presentation_test      : [
+                    "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
             ],
             email                  : [
                     "org.springframework.boot:spring-boot-starter-mail:$spring_boot_version"
@@ -114,9 +146,6 @@ subprojects {
                     "org.junit.jupiter:junit-jupiter-engine:5.0.0",
                     "com.nhaarman:mockito-kotlin-kt1.1:1.5.0",
                     "com.natpryce:hamkrest:1.4.2.0",
-                    "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version",
-                    "org.springframework.boot:spring-boot-starter-test:$spring_boot_version",
-                    "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
             ]
     ]
 }
