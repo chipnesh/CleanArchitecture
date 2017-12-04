@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE
 import org.springframework.web.bind.annotation.*
 
-
 @RestController
 @RequestMapping(value = ["/account"], produces = [APPLICATION_JSON_UTF8_VALUE])
 actual class AccountApi(

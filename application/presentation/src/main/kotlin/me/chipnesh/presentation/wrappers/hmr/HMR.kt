@@ -1,4 +1,4 @@
-package me.chipnesh.presentation.common.hmr
+package me.chipnesh.presentation.wrappers.hmr
 
 external val module: Module
 

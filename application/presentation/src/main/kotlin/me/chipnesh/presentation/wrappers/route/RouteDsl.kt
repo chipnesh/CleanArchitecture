@@ -1,9 +1,9 @@
-package me.chipnesh.presentation.common.route
+package me.chipnesh.presentation.wrappers.route
 
 import react.*
 import kotlin.reflect.KClass
 
-fun RBuilder.hashRouter(handler: RHandler<RProps>) = child(BrowserRouterComponent::class, handler)
+fun RBuilder.router(handler: RHandler<RProps>) = child(BrowserRouterComponent::class, handler)
 
 fun RBuilder.switch(handler: RHandler<RProps>) = child(SwitchComponent::class, handler)
 
@@ -22,3 +22,11 @@ fun RBuilder.routeLink(to: String, handler: RHandler<RProps>) = child(LinkCompon
     }
     handler()
 }
+
+fun RBuilder.connectedRouter(history: dynamic, handler: RHandler<RProps>) =
+        child(ConnectedRouterComponent::class) {
+            attrs {
+                this.history = history
+            }
+            this.handler()
+        }

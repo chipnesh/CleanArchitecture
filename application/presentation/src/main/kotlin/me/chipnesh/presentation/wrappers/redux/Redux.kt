@@ -1,25 +1,25 @@
-package me.chipnesh.presentation.common.redux
+package me.chipnesh.presentation.wrappers.redux
 
-import kotlinext.js.asJsObject
-import kotlinext.js.js
-import me.chipnesh.presentation.common.async.launch
-import me.chipnesh.presentation.common.redux.ReduxNative.Store
-import me.chipnesh.presentation.common.route.BrowserHistoryNative
-import me.chipnesh.presentation.common.route.RouterReduxNative.routerMiddleware
-import me.chipnesh.presentation.common.route.RouterReduxNative.routerReducer
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import kotlin.js.Promise
+import kotlinext.js.assign
+import me.chipnesh.presentation.State
+import me.chipnesh.presentation.wrappers.redux.ReactReduxNative.connectRedux
+import me.chipnesh.presentation.wrappers.redux.ReduxNative.Store
+import me.chipnesh.presentation.wrappers.redux.ReduxNative.applyMiddleware
+import me.chipnesh.presentation.wrappers.redux.ReduxNative.compose
+import me.chipnesh.presentation.wrappers.redux.ReduxNative.createStore
+import me.chipnesh.presentation.wrappers.route.RouterReduxNative.routerReducer
+import me.chipnesh.presentation.wrappers.route.createBrowserHistory
+import me.chipnesh.presentation.wrappers.route.routerMiddleware
+import react.*
 import kotlin.reflect.KClass
 
 typealias Middleware<S> = Store<S>.() -> ((Any) -> Any) -> (Any) -> Any
 typealias Dispatch = (Any) -> Any
 typealias GetState<S> = () -> S
 
-val history = BrowserHistoryNative.default
-val thunkMiddleware: dynamic = ReduxThunk.default
-val routerMiddleware: dynamic = routerMiddleware(history)
+val history = createBrowserHistory()
+val thunkMiddleware: Middleware<*> = ReduxThunk.default
+val routerMiddleware: Middleware<*> = routerMiddleware(history)
 val routerReducer: dynamic = routerReducer()
 
 fun <S> thunk(f: Store<S>.() -> Any) = { dispatch: Dispatch, getState: GetState<S> ->
@@ -51,21 +51,19 @@ fun <S, A : Any> createStoreInner(
             state
         }
     }
-    val native = ReduxNative.createStore(
+    val native = createStore(
             wrapper,
             init,
-            ReduxNative.applyMiddleware(*(middleWares + actionTypeChecker()).toTypedArray())
+            compose(applyMiddleware(*(middleWares + actionTypeChecker()).toTypedArray()))
     )
-    return object : Store<S> by native {}
+    return native.unsafeCast<Store<S>>()
 }
 
 fun <S> promise(): Middleware<S> = {
     { next ->
         { action ->
             if (jsTypeOf(action) === "function") {
-                (action as Promise<*>).then {
-                    next(action)
-                }
+                action.asDynamic()(next)
             } else {
                 next(action)
             }
@@ -76,7 +74,7 @@ fun <S> promise(): Middleware<S> = {
 fun <S> logger(): Middleware<S> = {
     { next ->
         { action ->
-            console.log("Action:", action)
+            console.log("Action:", action::class.simpleName)
             console.log("Before:", getState())
             val result = next(action)
             console.log("After:", getState())
@@ -103,3 +101,8 @@ fun <S : Any> RBuilder.provider(store: Store<S>, handler: RHandler<RProps>) =
             }
             this.handler()
         }
+
+fun <P : RProps> connect(component: React.Component<*, *>, state: P.(State) -> Unit)
+        : KClass<out React.Component<*, *>> {
+    return connectRedux({ assign(it, state) })(component.asDynamic().constructor)::class
+}

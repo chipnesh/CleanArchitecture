@@ -1,4 +1,4 @@
-package me.chipnesh.presentation.common.redux
+package me.chipnesh.presentation.wrappers.redux
 
 @JsModule("redux-thunk")
 external object ReduxThunk {

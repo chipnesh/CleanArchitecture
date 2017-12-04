@@ -19,6 +19,7 @@ compileKotlin2Js {
         metaInfo = true
         outputFile = "$project.buildDir.path/js/${project.name}.js"
         sourceMap = true
+        sourceMapEmbedSources = "always"
         moduleKind = 'commonjs'
         main = "call"
     }
@@ -29,6 +30,7 @@ compileTestKotlin2Js {
         metaInfo = true
         outputFile = "$project.buildDir.path/js-tests/${project.name}-tests.js"
         sourceMap = true
+        sourceMapEmbedSources = "always"
         moduleKind = 'commonjs'
         main = "call"
     }
@@ -44,9 +46,11 @@ kotlinFrontend {
         dependency "react-router"
         dependency "react-router-redux"
         dependency "react-router-dom"
+        dependency "connected-react-router"
         dependency "history"
         dependency "redux"
         dependency "redux-thunk"
+        dependency "css-loader"
         dependency "style-loader"
 
         devDependency "karma"
@@ -56,6 +60,7 @@ kotlinFrontend {
         contentPath = file('src/main/web')
         sourceMapEnabled = true
         publicPath = "/"
+        proxyUrl = "http://localhost:8080/"
         port = 7777
     }
 }

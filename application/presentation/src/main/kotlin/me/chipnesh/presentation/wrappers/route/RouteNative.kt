@@ -1,5 +1,5 @@
 @file:JsModule("react-router-dom")
-package me.chipnesh.presentation.common.route
+package me.chipnesh.presentation.wrappers.route
 
 import react.*
 
@@ -41,4 +41,10 @@ external interface RouteResultMatch<T : RProps> {
     var url: String
     var path: String
     var params: T
+}
+
+external interface ConnectedRouterProps : RProps {
+    var history: dynamic
+    var location: dynamic
+    var action: dynamic
 }

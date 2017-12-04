@@ -1,14 +1,13 @@
-package me.chipnesh.presentation.common.hmr
+package me.chipnesh.presentation.wrappers.hmr
 
-import me.chipnesh.presentation.common.async.launch
 import kotlin.browser.document
 
 abstract class ReloadableApplication<S> {
     abstract val initState: S
-    suspend abstract fun start(state: S)
+    abstract fun start(state: S)
     abstract fun dispose(): S
 
-    suspend fun run() {
+    fun run() {
         val state: dynamic = module.hot?.let { hot ->
             hot.accept()
 
@@ -23,9 +22,7 @@ abstract class ReloadableApplication<S> {
             start(state?.appState ?: initState)
         } else {
             document.addEventListener("DOMContentLoaded", {
-                launch {
-                    start(state?.appState ?: initState)
-                }
+                start(state?.appState ?: initState)
             })
         }
     }

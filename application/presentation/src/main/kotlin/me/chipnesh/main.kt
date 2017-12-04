@@ -1,8 +1,7 @@
 package me.chipnesh
 
 import me.chipnesh.presentation.Application
-import me.chipnesh.presentation.common.async.launch
 
-fun main(args: Array<String>) = launch {
+fun main(args: Array<String>) {
     Application().run()
 }

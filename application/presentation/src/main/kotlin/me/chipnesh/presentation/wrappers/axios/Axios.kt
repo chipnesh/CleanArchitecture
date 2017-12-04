@@ -1,4 +1,4 @@
-package me.chipnesh.presentation.common.axios
+package me.chipnesh.presentation.wrappers.axios
 
 import kotlinext.js.jsObject
 import kotlin.browser.document
@@ -46,21 +46,25 @@ external interface AxiosResponse<T> {
 }
 
 fun get(path: String, block: AxiosConfigSettings.() -> Unit = {}) : AxiosConfigSettings {
-    return jsObject {
+    val settings = jsObject<AxiosConfigSettings> {
         method = "GET"
         timeout = 3000
-        url = document.location!!.host + path
-        this.block()
+        url = document.location!!.origin + path
+        params = js("({})")
     }
+    settings.block()
+    return settings
 }
 
 fun post(path: String, block: AxiosConfigSettings.() -> Unit = {}) : AxiosConfigSettings {
-    return jsObject {
+    val settings = jsObject<AxiosConfigSettings> {
         method = "POST"
         timeout = 3000
-        url = document.location!!.host + path
-        this.block()
+        url = document.location!!.origin + path
+        params = js("({})")
     }
+    settings.block()
+    return settings
 }
 
 fun <T> Promise<AxiosResponse<T>>.execute(c: Continuation<T>) {

@@ -1,8 +1,8 @@
 package me.chipnesh.api
 
-import me.chipnesh.presentation.common.axios.axios
-import me.chipnesh.presentation.common.axios.execute
-import me.chipnesh.presentation.common.axios.post
+import me.chipnesh.presentation.wrappers.axios.axios
+import me.chipnesh.presentation.wrappers.axios.execute
+import me.chipnesh.presentation.wrappers.axios.post
 import kotlin.coroutines.experimental.suspendCoroutine
 
 actual class AuthenticationApi {

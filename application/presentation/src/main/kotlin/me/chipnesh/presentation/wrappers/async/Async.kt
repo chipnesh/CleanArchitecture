@@ -1,4 +1,4 @@
-package me.chipnesh.presentation.common.async
+package me.chipnesh.presentation.wrappers.async
 
 import kotlin.js.Promise
 import kotlin.coroutines.experimental.*
