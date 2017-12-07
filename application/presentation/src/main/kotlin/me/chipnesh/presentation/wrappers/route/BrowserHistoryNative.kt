@@ -2,4 +2,4 @@
 package me.chipnesh.presentation.wrappers.route
 
 @JsName("createBrowserHistory")
-external fun createBrowserHistory()
+external fun createBrowserHistory() : dynamic

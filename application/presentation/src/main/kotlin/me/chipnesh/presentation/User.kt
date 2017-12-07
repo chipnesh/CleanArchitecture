@@ -4,7 +4,7 @@ import me.chipnesh.api.AccountApi
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.presentation.components.Action
 import me.chipnesh.presentation.wrappers.async.async
-import me.chipnesh.presentation.wrappers.redux.thunk
+import me.chipnesh.presentation.wrappers.react.redux.thunk
 
 val accounts = AccountApi()
 
@@ -16,6 +16,7 @@ data class User(
     companion object {
         val ANON = User("", "anonymous", "")
     }
+
     fun isAnon() = this == ANON
 }
 
@@ -31,11 +32,13 @@ fun User.UserReducer(action: Action) = when (action) {
 }
 
 fun getUser(login: String) {
-    store.dispatch(thunk<State> {
-        async {
-            accounts.info(login)
-        }.then { result ->
-            dispatch(Action.GetUser(result))
+    store.dispatch {
+        thunk<State> {
+            async {
+                accounts.info(login)
+            }.then { result ->
+                dispatch(Action.GetUser(result))
+            }
         }
-    })
+    }
 }

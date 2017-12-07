@@ -5,7 +5,7 @@ import me.chipnesh.api.AuthenticationForm
 import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.presentation.components.Action
 import me.chipnesh.presentation.wrappers.async.async
-import me.chipnesh.presentation.wrappers.redux.thunk
+import me.chipnesh.presentation.wrappers.react.redux.thunk
 
 val sessions = AuthenticationApi()
 
@@ -30,11 +30,13 @@ fun Session.SessionReducer(action: Action) = when (action) {
 }
 
 fun login(login: String, password: String) {
-    store.dispatch(thunk<State> {
-        async {
-            sessions.authenticate(AuthenticationForm(login, password))
-        }.then { result ->
-            dispatch(Action.Login(result))
+    store.dispatch {
+        thunk<State> {
+            async {
+                sessions.authenticate(AuthenticationForm(login, password))
+            }.then { result ->
+                dispatch(Action.Login(result))
+            }
         }
-    })
+    }
 }

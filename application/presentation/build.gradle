@@ -36,6 +36,10 @@ compileTestKotlin2Js {
     }
 }
 
+// get kotlin type definitions
+// npm -i install [module name]
+// ts2kt -d headers index.d.ts
+
 kotlinFrontend {
     npm {
         dependency "rmwc"
@@ -50,6 +54,7 @@ kotlinFrontend {
         dependency "history"
         dependency "redux"
         dependency "redux-thunk"
+        dependency "redux-logger"
         dependency "css-loader"
         dependency "style-loader"
 
