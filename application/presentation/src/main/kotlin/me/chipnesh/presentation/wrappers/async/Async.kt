@@ -4,13 +4,7 @@ import kotlin.js.Promise
 import kotlin.coroutines.experimental.*
 
 fun launch(block: suspend () -> Unit) {
-    block.startCoroutine(object : Continuation<Unit> {
-        override val context: CoroutineContext get() = EmptyCoroutineContext
-        override fun resume(value: Unit) {}
-        override fun resumeWithException(exception: Throwable) {
-            console.log("Coroutine failed: $exception")
-        }
-    })
+    async(block).catch { exception -> console.log("Failed with $exception") }
 }
 
 public fun <T> async(c: suspend () -> T): Promise<T> {

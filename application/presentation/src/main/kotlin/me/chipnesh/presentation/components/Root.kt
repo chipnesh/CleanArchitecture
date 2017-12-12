@@ -1,49 +1,54 @@
 package me.chipnesh.presentation.components
 
+import kotlinx.html.div
+import kotlinx.html.label
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.presentation.State
-import me.chipnesh.presentation.getQuote
-import me.chipnesh.presentation.wrappers.react.redux.DispatchProp
-import me.chipnesh.presentation.wrappers.route.RouteResultProps
-import react.*
-import react.dom.div
-import react.dom.span
-import rmwc.TypographyType.TITLE
-import rmwc.button
-import rmwc.typography
+import me.chipnesh.presentation.components.RouterComponent.RouterProps
+import me.chipnesh.presentation.wrappers.js.jsObject
+import me.chipnesh.presentation.wrappers.react.RProps
+import me.chipnesh.presentation.wrappers.react.ReactComponentStatelessSpec
+import me.chipnesh.presentation.wrappers.react.dom.ReactDOMBuilder
+import me.chipnesh.presentation.wrappers.react.dom.ReactDOMStatelessComponent
+import me.chipnesh.presentation.wrappers.redux.ReduxAction
+import me.chipnesh.presentation.wrappers.redux.connect
 
 
-sealed class Action : me.chipnesh.presentation.wrappers.react.redux.IAction {
-    data class Login(val result: AuthenticationResult): Action()
-    data class GetQuote(val quote: String): Action()
-    data class GetUser(val result: AccountInfoResult): Action()
+sealed class Action(payload: Any) : ReduxAction(payload) {
+    data class Login(val result: AuthenticationResult) : Action(result)
+    data class GetQuote(val quote: String) : Action(quote)
+    data class GetUser(val result: AccountInfoResult) : Action(result)
 }
 
-interface AppProps : DispatchProp<State> {
-}
+//https://github.com/Xantier/fullstack-kotlin/blob/master/frontend/src/main/kotlin/com/packtpub/components/ProjectList.kt
 
-interface AppState : RState {
-    var quote: String
-}
+val routerComponent = connect<RouterProps, State>({ state: State, _ ->
+    jsObject {
+        quota = state.quote
+    }
+}, { dispatch, _ ->
+    jsObject {
+        getQuote = { target, value ->
+            dispatch(Action.GetQuote("women"))
+        }
+    }
+})
 
-class Root : RComponent<RouteResultProps<State, AppProps>, AppState>() {
+class RouterComponent : ReactDOMStatelessComponent<RouterProps>() {
+    companion object : ReactComponentStatelessSpec<RouterComponent, RouterProps>
 
-    override fun RBuilder.render() {
+
+    override fun ReactDOMBuilder.render() {
         div {
-            typography(TITLE) {
-                span {
-                    +("Title is " + state.quote)
-                }
-            }
-            button {
-                +"Get quote"
-                attrs {
-                    onClick = {
-                        getQuote("woman")
-                    }
-                }
+            label {
+                +"Text"
             }
         }
     }
+
+    class RouterProps(
+            var quota: String = "",
+            var getQuote: (Any, String) -> Unit
+    ) : RProps()
 }

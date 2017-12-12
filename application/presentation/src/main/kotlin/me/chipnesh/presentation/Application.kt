@@ -1,14 +1,15 @@
 package me.chipnesh.presentation
 
-import kotlinext.js.asJsObject
 import me.chipnesh.presentation.Session.Companion.EMPTY
 import me.chipnesh.presentation.User.Companion.ANON
 import me.chipnesh.presentation.components.Action
-import me.chipnesh.presentation.components.Root
+import me.chipnesh.presentation.components.routerComponent
 import me.chipnesh.presentation.wrappers.hmr.ReloadableApplication
-import me.chipnesh.presentation.wrappers.react.redux.*
-import me.chipnesh.presentation.wrappers.route.*
-import react.dom.render
+import me.chipnesh.presentation.wrappers.react.dom.ReactDOM
+import me.chipnesh.presentation.wrappers.react.dom.render
+import me.chipnesh.presentation.wrappers.redux.*
+import me.chipnesh.presentation.wrappers.redux.Redux.applyMiddleware
+import me.chipnesh.presentation.wrappers.redux.Redux.createStore
 import kotlin.browser.document
 
 data class State(
@@ -17,12 +18,11 @@ data class State(
         val session: Session = EMPTY
 )
 
-fun State.rootReducer(action: Action) = State(
-        quote = quote.QuoteReducer(action),
-        user = user.UserReducer(action),
-        session = session.SessionReducer(action)
-) {
-}
+fun rootReducer(state: State, action: Action) = State(
+        quote = state.quote.QuoteReducer(action),
+        user = state.user.UserReducer(action),
+        session = state.session.SessionReducer(action)
+)
 
 lateinit var store: Store<State>
 
@@ -30,24 +30,15 @@ class Application : ReloadableApplication<State>() {
     override val initState: State = State()
 
     override fun start(state: State) {
-        val reducers = js("({})")
-        reducers.root = { s: State?, action: Action -> s?.rootReducer(action) ?: initState }
-        reducers.routing = ::routerReducer
-        store = createStore(
-                combineReducers<State, Action>(reducers),
-                initState,
-                applyMiddleware(
-                        thunkMiddleware,
-                        loggerMiddleware
-                ))
-        val history = syncHistoryWithStore(createBrowserHistory(), store)
-
-        render(document.getElementById("root")) {
-            provider(store) {
-                router(history) {
-                    route("/", connect<State, Root>())
-                }
+        val reduxStore = createStore(::rootReducer, State(),
+                composeWithDevTools(applyMiddleware<State>(ReduxThunk, loggerMiddleware))
+        )
+        ReactDOM.render(document.getElementById("root")) {
+            ProviderComponent {
+                store = reduxStore
+                children = asConnectedElement(routerComponent)
             }
+
         }
     }
 

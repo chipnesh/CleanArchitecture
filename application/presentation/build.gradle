@@ -51,6 +51,7 @@ kotlinFrontend {
         dependency "react-router-redux"
         dependency "react-router-dom"
         dependency "connected-react-router"
+        dependency "redux-devtools-extension"
         dependency "history"
         dependency "redux"
         dependency "redux-thunk"
