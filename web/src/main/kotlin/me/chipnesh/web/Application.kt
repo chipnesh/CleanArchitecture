@@ -1,8 +1,5 @@
 package me.chipnesh.web
 
-import kotlinext.js.asJsObject
-import kotlinext.js.js
-import kotlinext.js.jsObject
 import kotlinext.js.toPlainObjectStripNull
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.api.AuthenticationResult
@@ -22,13 +19,11 @@ import me.chipnesh.web.quote.quoteReducer
 import me.chipnesh.web.wrappers.hmr.ReloadableApplication
 import me.chipnesh.web.wrappers.redux.*
 import me.chipnesh.web.wrappers.redux.Redux.applyMiddleware
-import me.chipnesh.web.wrappers.router.History.createBrowserHistory
+import me.chipnesh.web.wrappers.router.*
+import me.chipnesh.web.wrappers.router.ReactRouterDom.withRouter
 import me.chipnesh.web.wrappers.router.ReactRouterRedux.routerMiddleware
 import me.chipnesh.web.wrappers.router.ReactRouterRedux.routerReducer
-import me.chipnesh.web.wrappers.router.ReactRouterRedux.syncHistoryWithStore
-import me.chipnesh.web.wrappers.router.connectedRouter
-import me.chipnesh.web.wrappers.router.route
-import me.chipnesh.web.wrappers.router.switch
+import react.dom.div
 import react.dom.render
 import kotlin.browser.document
 
@@ -41,21 +36,17 @@ sealed class Action {
 data class State(
         val quota: String = "",
         val user: User = ANON,
-        val session: Session = EMPTY,
-        val router: dynamic = js{}
+        val session: Session = EMPTY
 )
 
 class Application : ReloadableApplication<State>() {
-    override val initState: State = jsObject { State() }
+    override val initState: State = State()
 
     override fun start(state: State) {
 
-        val browserHistory = createBrowserHistory()
         val reducers = createReducers()
-        val middlewares = createMiddlewares(browserHistory)
-        val store = createStore(reducers, initState, middlewares)
-        val history = syncHistoryWithStore(browserHistory, store)
-
+        val middlewares = createMiddlewares()
+        val store = createStore(reducers, state, middlewares)
         render(document.getElementById("root")) {
             provider(store) {
                 connectedRouter(history) {
@@ -69,16 +60,14 @@ class Application : ReloadableApplication<State>() {
 
     }
 
-    private fun createReducers(): Reducer<Any, Action> {
-        return combine(
-                "quota" to ::quoteReducer,
-                "user" to ::userReducer,
-                "session" to ::sessionReducer,
-                "router" to ::routerReducer
-        )
-    }
+    private fun createReducers(): Reducer<Any, Action> = combine(
+            "quota" to ::quoteReducer,
+            "user" to ::userReducer,
+            "session" to ::sessionReducer,
+            "router" to ::routerReducer
+    )
 
-    private fun createMiddlewares(history: dynamic): Enhancer<State> = composeWithDevTools(applyMiddleware<State>(
+    private fun createMiddlewares(): Enhancer<State> = composeWithDevTools(applyMiddleware<State>(
             thunkMiddleware,
             loggerMiddleware,
             actionTypeChecker,

@@ -23,14 +23,13 @@ compileKotlin2Js {
 kotlinFrontend {
     npm {
         dependency "rmwc"
-        dependency "react"
         dependency "axios"
-        dependency "react-dom"
-        dependency "react-redux"
-        dependency "react-router"
-        dependency "react-router-redux"
-        dependency "react-router-dom"
-        dependency "connected-react-router"
+        dependency ("react", "next")
+        dependency ("react-dom", "next")
+        dependency ("react-redux", "next")
+        dependency ("react-router", "4.2.0")
+        dependency ("react-router-dom", "4.2.2")
+        dependency ("react-router-redux", "next")
         dependency "redux-devtools-extension"
         dependency "history"
         dependency "redux"
@@ -46,7 +45,7 @@ kotlinFrontend {
         contentPath = file('src/main/web')
         sourceMapEnabled = true
         publicPath = "/"
-        proxyUrl = "http://localhost:8090/"
+//        proxyUrl = "http://localhost:8090/"
         port = 7777
     }
 }

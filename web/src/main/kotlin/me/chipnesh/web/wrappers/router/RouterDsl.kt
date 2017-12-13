@@ -25,9 +25,9 @@ fun RBuilder.routeLink(to: String, handler: RHandler<RProps>) = child(ReactRoute
     handler()
 }
 
-fun RBuilder.connectedRouter(history: dynamic, handler: RHandler<RProps>) = child(ConnectedReactRouter.ConnectedRouterComponent::class) {
+fun RBuilder.connectedRouter(history: dynamic, handler: RHandler<RProps>) = child(ReactRouterRedux.ConnectedRouterComponent::class) {
     attrs {
         this.history = history
     }
-    handler()
+    this.handler()
 }

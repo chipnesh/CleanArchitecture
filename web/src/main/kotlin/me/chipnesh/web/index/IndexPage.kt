@@ -10,16 +10,15 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.button
-import react.dom.div
-import rmwc.TypographyType.TITLE
-import rmwc.typography
 
 interface IndexProps : RProps {
     var goToQuotaPage: () -> Unit
 }
 
 val rootMapper = connect<IndexProps, State>(
-        null,
+        { state, props ->
+            assign(props) {}
+        },
         { dispatch, props ->
             assign(props) {
                 goToQuotaPage = {
@@ -31,10 +30,6 @@ val rootMapper = connect<IndexProps, State>(
 class IndexComponent : RComponent<IndexProps, RState>() {
 
     override fun RBuilder.render() {
-        div {
-            typography(TITLE) { +"Hello" }
-        }
-
         button {
             +"Go to quota page"
             attrs {

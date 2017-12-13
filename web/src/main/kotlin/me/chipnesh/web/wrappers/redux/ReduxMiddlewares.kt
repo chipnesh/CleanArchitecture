@@ -12,10 +12,14 @@ typealias Middleware = () -> ((dynamic) -> dynamic) -> (dynamic) -> dynamic
 private fun actionTypeChecker(): Middleware = {
     { next ->
         { action ->
-            val actionWrapper = js("({})")
-            actionWrapper["action"] = action
-            actionWrapper["type"] = action::class.simpleName
-            next(actionWrapper as Any)
+            if (action::class.simpleName !== "Any") {
+                val actionWrapper = js("({})")
+                actionWrapper["action"] = action
+                actionWrapper["type"] = action::class.simpleName
+                next(actionWrapper as Any)
+            } else {
+                next(action)
+            }
         }
     }
 }

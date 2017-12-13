@@ -1,15 +1,18 @@
 package me.chipnesh.web.wrappers.router
 
 import me.chipnesh.web.wrappers.redux.Middleware
-import me.chipnesh.web.wrappers.redux.Redux
 import react.RProps
 import react.RState
 import react.React
 import react.ReactElement
 
+
 @JsModule("react-router-dom")
 @JsNonModule
 external object ReactRouterDom {
+    @JsName("withRouter")
+    fun withRouter(component: dynamic): ReactElement
+
     @JsName("HashRouter")
     class HashRouterComponent : React.Component<RProps, RState> {
         override fun render(): ReactElement?
@@ -55,23 +58,6 @@ external object ReactRouterDom {
 @JsNonModule
 external object ReactRouterRedux {
 
-    @JsName("routerReducer")
-    fun routerReducer(state: Any, action: Any): Any
-
-    @JsName("routerMiddleware")
-    fun routerMiddleware(history: dynamic): Middleware
-
-    @JsName("syncHistoryWithStore")
-    fun syncHistoryWithStore(history: dynamic, store: dynamic)
-
-    @JsName("push")
-    fun push(path: String): Any
-}
-
-@JsModule("connected-react-router")
-@JsNonModule
-external object ConnectedReactRouter {
-
     @JsName("ConnectedRouter")
     class ConnectedRouterComponent : React.Component<ConnectedRouterProps, RState> {
         override fun render(): ReactElement?
@@ -79,14 +65,23 @@ external object ConnectedReactRouter {
 
     interface ConnectedRouterProps : RProps {
         var history: dynamic
-        var location: dynamic
-        var action: dynamic
     }
+
+    @JsName("routerReducer")
+    fun routerReducer(state: Any, action: Any): Any
+
+    @JsName("routerMiddleware")
+    fun routerMiddleware(history: dynamic): Middleware
+
+    @JsName("push")
+    fun push(path: String): Any
 }
 
 @JsModule("history")
 @JsNonModule
 external object History {
-    @JsName("createBrowserHistory")
-    fun createBrowserHistory(): dynamic
+    @JsName("createHashHistory")
+    fun createHashHistory(): dynamic
 }
+
+val history = History.createHashHistory()

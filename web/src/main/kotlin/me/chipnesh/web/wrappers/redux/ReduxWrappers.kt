@@ -20,6 +20,9 @@ external object Redux {
 
         @JsName("subscribe")
         fun subscribe(block: dynamic): dynamic
+
+        @JsName("replaceReducer")
+        fun replaceReducer(router:dynamic)
     }
 
     @JsName("createStore")
