@@ -2,9 +2,9 @@ package me.chipnesh.web.account
 
 import me.chipnesh.api.AccountApi
 import me.chipnesh.api.AccountInfoResult
+import me.chipnesh.web.Action
 import me.chipnesh.web.State
 import me.chipnesh.web.account.User.Companion.ANON
-import me.chipnesh.web.index.Action
 import me.chipnesh.web.wrappers.js.async
 import me.chipnesh.web.wrappers.redux.thunk
 

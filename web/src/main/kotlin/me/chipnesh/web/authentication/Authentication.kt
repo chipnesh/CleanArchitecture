@@ -3,9 +3,9 @@ package me.chipnesh.web.authentication
 import me.chipnesh.api.AuthenticationApi
 import me.chipnesh.api.AuthenticationForm
 import me.chipnesh.api.AuthenticationResult
+import me.chipnesh.web.Action
 import me.chipnesh.web.State
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
-import me.chipnesh.web.index.Action
 import me.chipnesh.web.wrappers.js.async
 import me.chipnesh.web.wrappers.redux.thunk
 
@@ -17,6 +17,7 @@ data class Session(
     companion object {
         val EMPTY = Session("")
     }
+
     fun isEmpty() = this == EMPTY
 }
 

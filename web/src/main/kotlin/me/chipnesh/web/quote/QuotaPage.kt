@@ -1,11 +1,8 @@
-package me.chipnesh.web.index
+package me.chipnesh.web.quote
 
 import kotlinext.js.assign
 import kotlinx.html.js.onKeyDownFunction
-import me.chipnesh.api.AccountInfoResult
-import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.web.State
-import me.chipnesh.web.quote.getRandomQuote
 import me.chipnesh.web.wrappers.js.enterPressed
 import me.chipnesh.web.wrappers.js.inputValue
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
@@ -19,18 +16,12 @@ import rmwc.TypographyType.BODY1
 import rmwc.TypographyType.TITLE
 import rmwc.typography
 
-sealed class Action {
-    data class Login(val result: AuthenticationResult) : Action()
-    data class GetQuota(val quota: String) : Action()
-    data class GetUser(val result: AccountInfoResult) : Action()
-}
-
-interface IndexProps : RProps {
+interface QuotaProps : RProps {
     var quota: String
     var onGetQuote: (String) -> Unit
 }
 
-val rootMapper = connect<IndexProps, State>(
+val quotaMapper = connect<QuotaProps, State>(
         { state, props ->
             assign(props) {
                 quota = state.quota
@@ -44,26 +35,26 @@ val rootMapper = connect<IndexProps, State>(
             }
         })
 
-class IndexComponent : RComponent<IndexProps, RState>() {
+class QuotaComponent : RComponent<QuotaProps, RState>() {
 
     override fun RBuilder.render() {
         div {
             typography(TITLE) { +"Chuck Norris joke:" }
         }
         div {
-            typography(BODY1) { +props.quota }
-        }
-        div {
             textArea {
                 attrs {
                     onKeyDownFunction = { event ->
-                        if(event.enterPressed) {
+                        if (event.enterPressed) {
                             event.preventDefault()
                             props.onGetQuote(event.inputValue)
                         }
                     }
                 }
             }
+        }
+        div {
+            typography(BODY1) { +props.quota }
         }
     }
 }

@@ -28,7 +28,7 @@ external object Redux {
                                             enhancer: Enhancer<S> = definedExternally): Store<S>
 
     @JsName("combineReducers")
-    fun combineReducers(reducers: dynamic): dynamic
+    fun combineReducers(vararg reducers: dynamic): dynamic
 
     @JsName("applyMiddleware")
     fun <S> applyMiddleware(vararg middleware: () -> (dynamic) -> dynamic): ((dynamic) -> Unit, () -> S) -> Unit
@@ -58,8 +58,8 @@ external object ReactRedux {
 
     @JsName("connect")
     fun <P : RProps, S : Any> connect(
-            mapStateToProps: ((S, P) -> P) = definedExternally,
-            mapDispatchToProps: (((Any) -> Unit, P) -> P) = definedExternally
+            mapStateToProps: ((S, P) -> P)? = definedExternally,
+            mapDispatchToProps: (((Any) -> Unit, P) -> P)? = definedExternally
     ): (RClass<P>) -> ReactElement
 }
 

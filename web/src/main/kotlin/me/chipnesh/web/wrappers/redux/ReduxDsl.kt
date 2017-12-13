@@ -11,7 +11,8 @@ inline fun <reified T : RComponent<P, *>, reified P: RProps> RBuilder.connect(
 ) {
     val type = T::class.js.unsafeCast<RClass<P>>()
     val props = P::class.createInstance()
-    child(React.createElement(connectFunction(type), props, arrayOf<ReactElement>()))
+    val connect = connectFunction(type)
+    child(React.createElement(connect, props, arrayOf<ReactElement>()))
 }
 
 inline fun <reified S : Any, reified A: Any> createStore(noinline reducer: Reducer<Any, A>,
