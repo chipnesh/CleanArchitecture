@@ -1,6 +1,0 @@
-apply plugin: 'kotlin-platform-common'
-apply plugin: 'kotlinx-serialization'
-
-dependencies {
-    compile libs.contract
-}

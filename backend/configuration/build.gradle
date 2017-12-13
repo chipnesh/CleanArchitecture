@@ -1,0 +1,12 @@
+dependencies {
+    compile project(":backend:domain")
+    compile project(":backend:dataprovider")
+    compile project(":backend:entrypoint")
+
+    compile libs.spring_boot
+    compile libs.template
+    compile libs.email
+    compile libs.log
+
+    testCompile libs.unit_tests
+}

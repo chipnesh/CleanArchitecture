@@ -1,0 +1,8 @@
+dependencies {
+    compile project(":backend:domain")
+    compile libs.dataprovider
+    compile libs.template
+    compile libs.email
+
+    testCompile libs.unit_tests
+}

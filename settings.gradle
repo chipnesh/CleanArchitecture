@@ -1,10 +1,10 @@
 rootProject.name = 'cleanarch'
 
-include "application"
-include "application:domain"
-include "application:configuration"
-include "application:dataprovider"
-include "application:entrypoint"
-include "application:contract"
-include "application:presentation"
+include "backend"
+include "backend:domain"
+include "backend:configuration"
+include "backend:dataprovider"
+include "backend:entrypoint"
+include "common"
+include "web"
 

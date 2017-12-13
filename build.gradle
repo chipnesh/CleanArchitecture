@@ -34,18 +34,17 @@ buildscript {
         classpath "org.jetbrains.kotlinx:kotlinx-gradle-serialization-plugin:$serialization_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:0.0.25"
-        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
     }
 }
 
-configure(allprojects - project(":application")) {
+configure(allprojects) {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
     }
 
-    if (project != project(":application:contract") &&
-        project != project(":application:presentation")) {
+    if (project != project(":common") &&
+        project != project(":web")) {
         apply plugin: 'kotlin'
     }
 
@@ -54,6 +53,7 @@ configure(allprojects - project(":application")) {
             coroutines "enable"
         }
     }
+
     compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
     compileKotlin.kotlinOptions.jvmTarget = "1.8"
 }
@@ -82,7 +82,7 @@ subprojects {
     }
 
     ext.libs = [
-            core                   : [
+            core : [
                     "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
                     "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
                     "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version",
@@ -90,7 +90,7 @@ subprojects {
                     "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version",
                     "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
             ],
-            spring_boot            : [
+            spring_boot : [
                     "org.springframework.boot:spring-boot-configuration-processor:$spring_boot_version",
                     "org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version",
                     "org.springframework.boot:spring-boot-starter-logging:$spring_boot_version",
@@ -100,12 +100,12 @@ subprojects {
                     "org.springframework:spring-context-support:$spring_version",
                     "org.springframework:spring-webflux:$spring_version"
             ],
-            rest                   : [
+            rest : [
                     "org.springframework:spring-context-support:$spring_version",
                     "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version",
                     "org.springframework.kotlin:spring-webflux-kotlin-coroutine:$spring_coroutine",
             ],
-            dataprovider           : [
+            dataprovider : [
                     "org.springframework.data:spring-data-mongodb:$spring_data_version",
                     "org.springframework.kotlin:spring-kotlin-coroutine:$spring_coroutine",
                     "org.springframework.kotlin:spring-data-mongodb-kotlin-coroutine:$spring_coroutine",
@@ -113,14 +113,14 @@ subprojects {
                     "org.springframework.kotlin:spring-webflux-kotlin-coroutine:$spring_coroutine",
                     "org.mongodb:mongodb-driver-reactivestreams:1.6.0"
             ],
-            template               : [
+            template : [
                     "org.springframework.boot:spring-boot-starter-thymeleaf:$spring_boot_version"
             ],
-            contract               : [
+            common : [
                     "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version",
                     "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
             ],
-            presentation           : [
+            web : [
                     "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_version",
                     "org.jetbrains:kotlin-react:$react_version",
                     "org.jetbrains:kotlin-extensions:$kotlin_extensions",
@@ -131,16 +131,16 @@ subprojects {
                     "com.github.rivasdiaz:kotlin-rmwc:$kotlin_rmwc_version"
 
             ],
-            presentation_test      : [
+            web_test : [
                     "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
             ],
-            email                  : [
+            email : [
                     "org.springframework.boot:spring-boot-starter-mail:$spring_boot_version"
             ],
-            log                    : [
+            log : [
                     "org.slf4j:slf4j-api:1.7.19"
             ],
-            unit_tests             : [
+            unit_tests : [
                     "org.junit.jupiter:junit-jupiter-api:5.0.0",
                     "org.junit.platform:junit-platform-runner:1.0.0",
                     "org.junit.jupiter:junit-jupiter-engine:5.0.0",

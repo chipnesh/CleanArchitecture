@@ -1,8 +1,0 @@
-dependencies {
-    compile project(":application:domain")
-    compile libs.dataprovider
-    compile libs.template
-    compile libs.email
-
-    testCompile libs.unit_tests
-}

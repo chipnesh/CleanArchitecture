@@ -1,0 +1,58 @@
+apply plugin: 'kotlin2js'
+apply plugin: "kotlin-dce-js"
+apply plugin: 'kotlin-platform-js'
+apply plugin: 'org.jetbrains.kotlin.frontend'
+
+dependencies {
+    expectedBy project(":common")
+    compile libs.web
+    testCompile libs.web_test
+}
+
+compileKotlin2Js {
+    kotlinOptions {
+        metaInfo = true
+        outputFile = "$project.buildDir.path/js/${project.name}.js"
+        sourceMap = true
+        sourceMapEmbedSources = "always"
+        moduleKind = 'commonjs'
+        main = "call"
+    }
+}
+
+kotlinFrontend {
+    npm {
+        dependency "rmwc"
+        dependency "react"
+        dependency "axios"
+        dependency "react-dom"
+        dependency "react-redux"
+        dependency "react-router"
+        dependency "react-router-redux"
+        dependency "react-router-dom"
+        dependency "connected-react-router"
+        dependency "redux-devtools-extension"
+        dependency "history"
+        dependency "redux"
+        dependency "redux-thunk"
+        dependency "redux-logger"
+        dependency "css-loader"
+        dependency "style-loader"
+
+        devDependency "karma"
+    }
+    webpackBundle {
+        bundleName = 'web'
+        contentPath = file('src/main/web')
+        sourceMapEnabled = true
+        publicPath = "/"
+        proxyUrl = "http://localhost:8080/"
+        port = 7777
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
