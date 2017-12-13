@@ -36,10 +36,6 @@ compileTestKotlin2Js {
     }
 }
 
-// get kotlin type definitions
-// npm -i install [module name]
-// ts2kt -d headers index.d.ts
-
 kotlinFrontend {
     npm {
         dependency "rmwc"

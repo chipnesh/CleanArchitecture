@@ -5,11 +5,9 @@ import kotlin.browser.document
 import kotlin.coroutines.experimental.Continuation
 import kotlin.js.Promise
 
-// Import the axios library (run "npm install axios --save" to install)
 @JsModule("axios")
 external fun <T> axios(config: AxiosConfigSettings): Promise<AxiosResponse<T>>
 
-// Type definition
 external interface AxiosConfigSettings {
     var url: String
     var method: String
@@ -45,7 +43,7 @@ external interface AxiosResponse<T> {
     val config: AxiosConfigSettings
 }
 
-fun get(path: String, block: AxiosConfigSettings.() -> Unit = {}) : AxiosConfigSettings {
+fun get(path: String, block: AxiosConfigSettings.() -> Unit = {}): AxiosConfigSettings {
     val settings = jsObject<AxiosConfigSettings> {
         method = "GET"
         timeout = 3000
@@ -56,7 +54,7 @@ fun get(path: String, block: AxiosConfigSettings.() -> Unit = {}) : AxiosConfigS
     return settings
 }
 
-fun post(path: String, block: AxiosConfigSettings.() -> Unit = {}) : AxiosConfigSettings {
+fun post(path: String, block: AxiosConfigSettings.() -> Unit = {}): AxiosConfigSettings {
     val settings = jsObject<AxiosConfigSettings> {
         method = "POST"
         timeout = 3000
@@ -73,6 +71,6 @@ fun <T> Promise<AxiosResponse<T>>.execute(c: Continuation<T>) {
         c.resume(response.data)
     }.catch { error ->
         console.log(error)
-        c.resumeWithException(RuntimeException("HTTP error: ${error.cause}"))
+        c.resumeWithException(RuntimeException("HTTP error: ${error}"))
     }
 }

@@ -1,46 +1,50 @@
 package me.chipnesh.presentation
 
+import kotlinext.js.jsObject
 import me.chipnesh.presentation.Session.Companion.EMPTY
 import me.chipnesh.presentation.User.Companion.ANON
-import me.chipnesh.presentation.components.Action
-import me.chipnesh.presentation.components.routerComponent
+import me.chipnesh.presentation.components.AppProps
+import me.chipnesh.presentation.components.RootComponent
+import me.chipnesh.presentation.components.rootMapper
 import me.chipnesh.presentation.wrappers.hmr.ReloadableApplication
-import me.chipnesh.presentation.wrappers.react.dom.ReactDOM
-import me.chipnesh.presentation.wrappers.react.dom.render
 import me.chipnesh.presentation.wrappers.redux.*
 import me.chipnesh.presentation.wrappers.redux.Redux.applyMiddleware
-import me.chipnesh.presentation.wrappers.redux.Redux.createStore
+import react.dom.render
 import kotlin.browser.document
 
 data class State(
-        val quote: String = "",
+        val quota: String = "",
         val user: User = ANON,
         val session: Session = EMPTY
 )
 
-fun rootReducer(state: State, action: Action) = State(
-        quote = state.quote.QuoteReducer(action),
-        user = state.user.UserReducer(action),
-        session = state.session.SessionReducer(action)
-)
-
-lateinit var store: Store<State>
-
 class Application : ReloadableApplication<State>() {
-    override val initState: State = State()
+    override val initState: State = jsObject { State() }
 
     override fun start(state: State) {
-        val reduxStore = createStore(::rootReducer, State(),
-                composeWithDevTools(applyMiddleware<State>(ReduxThunk, loggerMiddleware))
+        val reducers = combine(
+                "quota" to ::quoteReducer,
+                "user" to ::userReducer,
+                "session" to ::sessionReducer
         )
-        ReactDOM.render(document.getElementById("root")) {
-            ProviderComponent {
-                store = reduxStore
-                children = asConnectedElement(routerComponent)
-            }
+        val middlewares = applyMiddleware<State>(
+                thunkMiddleware,
+                loggerMiddleware,
+                actionTypeChecker
+        )
+        val store = createStore (
+                reducers,
+                initState,
+                composeWithDevTools(middlewares)
+        )
 
+        render(document.getElementById("root")) {
+            provider(store) {
+                connect<RootComponent, AppProps>(rootMapper)
+            }
         }
+
     }
 
-    override fun dispose(): State = store.getState()
+    override fun dispose(): State = initState
 }

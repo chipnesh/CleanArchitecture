@@ -1,31 +1,65 @@
 package me.chipnesh.presentation.wrappers.redux
 
-external class Store<out S : Any> {
-    @JsName("getState")
-    fun getState(): S
+import kotlinext.js.js
+import me.chipnesh.presentation.wrappers.redux.Redux.combineReducers
+import react.*
 
-    @JsName("dispatch")
-    fun doDispatch(action: dynamic)
-}
+typealias Reducer<S, A> = (S, A) -> S
+typealias Enhancer<S> = (dynamic) -> S
 
 @JsModule("redux")
 @JsNonModule
 external object Redux {
+
+    interface Store<out S : Any> {
+        @JsName("getState")
+        fun getState(): S
+
+        @JsName("dispatch")
+        fun dispatch(action: Any): Any
+
+        @JsName("subscribe")
+        fun subscribe(block: dynamic): dynamic
+    }
+
     @JsName("createStore")
-    fun <S: Any> createStore(reducer: (S, dynamic) -> S,
-                                      initialState: S,
-                                      enhancer: (dynamic) -> S = definedExternally)
-        : Store<S>
+    fun <S : Any, A : Any> createStoreInner(reducer: Reducer<*, A>,
+                                            initialState: S,
+                                            enhancer: Enhancer<S> = definedExternally): Store<S>
+
+    @JsName("combineReducers")
+    fun combineReducers(reducers: dynamic): dynamic
 
     @JsName("applyMiddleware")
-    fun <S> applyMiddleware(vararg middleware: () -> (dynamic) -> dynamic)
-        : ((dynamic) -> Unit, () -> S) -> Unit
+    fun <S> applyMiddleware(vararg middleware: () -> (dynamic) -> dynamic): ((dynamic) -> Unit, () -> S) -> Unit
 
     @JsName("compose")
     fun compose(vararg funcs: dynamic): (dynamic) -> dynamic
 }
 
-
-fun <S: Any> Store<S>.dispatch(action: ReduxAction) {
-    this.doDispatch(action())
+fun <A : Any> combine(vararg pairs: Pair<String, Reducer<*, A>>): Reducer<Any, A> {
+    val reducersObject = js {}
+    pairs.forEach { (k, v) -> reducersObject[k] = v }
+    return combineReducers(reducersObject)
 }
+
+@JsModule("react-redux")
+@JsNonModule
+external object ReactRedux {
+
+    interface ProviderProps : RProps {
+        var store: Redux.Store<*>
+    }
+
+    @JsName("Provider")
+    class ProviderComponent : React.Component<ProviderProps, RState> {
+        override fun render(): ReactElement?
+    }
+
+    @JsName("connect")
+    fun <P : RProps, S : Any> connect(
+            mapStateToProps: ((S, P) -> P) = definedExternally,
+            mapDispatchToProps: (((Any) -> Unit, P) -> P) = definedExternally
+    ): (RClass<P>) -> ReactElement
+}
+

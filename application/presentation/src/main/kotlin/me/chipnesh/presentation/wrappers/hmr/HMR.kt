@@ -15,5 +15,3 @@ external interface Hot {
 
     fun dispose(callback: (data: dynamic) -> Unit)
 }
-
-external fun require(name: String): dynamic
