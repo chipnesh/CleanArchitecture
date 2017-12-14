@@ -1,14 +1,13 @@
 package me.chipnesh.web.quote
 
 import kotlinext.js.assign
-import kotlinx.html.js.onKeyDownFunction
 import me.chipnesh.web.State
 import me.chipnesh.web.wrappers.js.enterPressed
 import me.chipnesh.web.wrappers.js.inputValue
 import me.chipnesh.web.wrappers.material.raisedButton
 import me.chipnesh.web.wrappers.material.textField
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
-import me.chipnesh.web.wrappers.router.ReactRouterRedux.push
+import me.chipnesh.web.wrappers.router.ReactRouterRedux.goto
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -34,11 +33,11 @@ val quotaMapper = connect<QuotaProps, State>(
                 onGetQuote = { word: String ->
                     dispatch(getRandomQuote(word))
                 }
-                goToIndex = { dispatch(push("/")) }
+                goToIndex = { dispatch(goto("/")) }
             }
         })
 
-class QuotaComponent : RComponent<QuotaProps, RState>() {
+class QuotaPage : RComponent<QuotaProps, RState>() {
 
     override fun RBuilder.render() {
         div {

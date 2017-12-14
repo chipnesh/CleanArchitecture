@@ -7,7 +7,7 @@ import react.RProps
 
 fun RBuilder.hashRouter(handler: RHandler<RProps>) = child(ReactRouterDom.HashRouterComponent::class, handler)
 
-fun RBuilder.switch(handler: RHandler<RProps>) = child(ReactRouterDom.SwitchComponent::class, handler)
+fun RBuilder.pageSwitch(handler: RHandler<RProps>) = child(ReactRouterDom.SwitchComponent::class, handler)
 
 fun RBuilder.route(path: String, component: dynamic, exact: Boolean = false) =
         child(ReactRouterDom.RouteComponent::class) {
@@ -25,7 +25,7 @@ fun RBuilder.routeLink(to: String, handler: RHandler<RProps>) = child(ReactRoute
     handler()
 }
 
-fun RBuilder.connectedRouter(history: dynamic, handler: RHandler<RProps>) = child(ReactRouterRedux.ConnectedRouterComponent::class) {
+fun RBuilder.router(history: dynamic, handler: RHandler<RProps>) = child(ReactRouterRedux.ConnectedRouterComponent::class) {
     attrs {
         this.history = history
     }

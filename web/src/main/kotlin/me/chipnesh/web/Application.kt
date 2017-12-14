@@ -8,9 +8,9 @@ import me.chipnesh.web.account.userReducer
 import me.chipnesh.web.authentication.Session
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
 import me.chipnesh.web.authentication.sessionReducer
-import me.chipnesh.web.index.IndexComponent
+import me.chipnesh.web.index.IndexPage
 import me.chipnesh.web.index.indexMapper
-import me.chipnesh.web.quote.QuotaComponent
+import me.chipnesh.web.quote.QuotaPage
 import me.chipnesh.web.quote.quotaMapper
 import me.chipnesh.web.quote.quoteReducer
 import me.chipnesh.web.wrappers.hmr.ReloadableApplication
@@ -45,11 +45,11 @@ class Application : ReloadableApplication<State>() {
         val store = createStore(reducers, state, middlewares)
         render(document.getElementById("root")) {
             materialUi {
-                provider(store) {
-                    connectedRouter(history) {
-                        switch {
-                            route("/", connect<IndexComponent>(indexMapper), true)
-                            route("/quota", connect<QuotaComponent>(quotaMapper))
+                reduxProvider(store) {
+                    router(history) {
+                        pageSwitch {
+                            route("/", connect<IndexPage>(indexMapper), true)
+                            route("/quota", connect<QuotaPage>(quotaMapper))
                         }
                     }
                 }

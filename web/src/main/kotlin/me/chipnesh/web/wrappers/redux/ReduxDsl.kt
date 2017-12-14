@@ -41,7 +41,7 @@ fun <S : Any> thunk(f: Store<S>.() -> Any) = { dispatch: (Any) -> Any,
     store.f()
 }
 
-fun <S : Any> RBuilder.provider(store: Store<S>, handler: RHandler<RProps>) =
+fun <S : Any> RBuilder.reduxProvider(store: Store<S>, handler: RHandler<RProps>) =
         child(ProviderComponent::class) {
             attrs {
                 this.store = store

@@ -4,7 +4,7 @@ import kotlinext.js.assign
 import me.chipnesh.web.State
 import me.chipnesh.web.wrappers.material.raisedButton
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
-import me.chipnesh.web.wrappers.router.ReactRouterRedux.push
+import me.chipnesh.web.wrappers.router.ReactRouterRedux.goto
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -19,12 +19,12 @@ val indexMapper = connect<IndexProps, State>(
         { dispatch, props ->
             assign(props) {
                 goToQuotaPage = {
-                    dispatch(push("/quota"))
+                    dispatch(goto("/quota"))
                 }
             }
         })
 
-class IndexComponent : RComponent<IndexProps, RState>() {
+class IndexPage : RComponent<IndexProps, RState>() {
 
     override fun RBuilder.render() {
         raisedButton("Go to quota page") {
