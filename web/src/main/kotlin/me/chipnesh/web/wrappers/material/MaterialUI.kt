@@ -27,4 +27,16 @@ external object MaterialUI {
         var label: String
         var onClick: (Event) -> Unit
     }
+
+    @JsName("TextField")
+    class TextField : React.Component<TextFieldProps, RState> {
+        override fun render(): ReactElement?
+    }
+
+    interface TextFieldProps : RProps {
+        var errorText: String
+        var hintText: String
+        var type: String
+        var onKeyDown: (Event) -> Unit
+    }
 }

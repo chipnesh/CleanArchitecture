@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<link>
-    <meta charset="UTF-8">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Google's material design UI components built with React.">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1, minimum-scale=1">
     <title>React App</title>
-    <!--<link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.css"></link>-->
-    <script src="web.bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css"></link>
 </head>
 <body>
-<div id="root"></div>
+    <div id="root"></div>
+
+    <script>
+        var WebFontConfig = {
+            google: {families: ['Roboto:400,300,500:latin']}
+        };
+        (function () {
+            var wf = document.createElement('script');
+            wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+    </script>
+    <script src="web.bundle.js"></script>
 </body>
 </html>

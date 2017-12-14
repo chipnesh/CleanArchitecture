@@ -6,6 +6,7 @@ import me.chipnesh.web.State
 import me.chipnesh.web.wrappers.js.enterPressed
 import me.chipnesh.web.wrappers.js.inputValue
 import me.chipnesh.web.wrappers.material.raisedButton
+import me.chipnesh.web.wrappers.material.textField
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
 import me.chipnesh.web.wrappers.router.ReactRouterRedux.push
 import react.RBuilder
@@ -15,7 +16,6 @@ import react.RState
 import react.dom.div
 import react.dom.h1
 import react.dom.h2
-import react.dom.textArea
 
 interface QuotaProps : RProps {
     var quota: String
@@ -44,14 +44,10 @@ class QuotaComponent : RComponent<QuotaProps, RState>() {
         div {
             h1 { +"Chuck Norris joke:" }
             div {
-                textArea {
-                    attrs {
-                        onKeyDownFunction = { event ->
-                            if (event.enterPressed) {
-                                event.preventDefault()
-                                props.onGetQuote(event.inputValue)
-                            }
-                        }
+                textField("theme") { event ->
+                    if (event.enterPressed) {
+                        event.preventDefault()
+                        props.onGetQuote(event.inputValue)
                     }
                 }
             }
