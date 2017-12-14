@@ -9,16 +9,14 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
-import react.dom.button
+import rmwc.button
 
 interface IndexProps : RProps {
     var goToQuotaPage: () -> Unit
 }
 
-val rootMapper = connect<IndexProps, State>(
-        { state, props ->
-            assign(props) {}
-        },
+val indexMapper = connect<IndexProps, State>(
+        null,
         { dispatch, props ->
             assign(props) {
                 goToQuotaPage = {
@@ -33,7 +31,7 @@ class IndexComponent : RComponent<IndexProps, RState>() {
         button {
             +"Go to quota page"
             attrs {
-                onClickFunction = {
+                onClick = {
                     props.goToQuotaPage()
                 }
             }

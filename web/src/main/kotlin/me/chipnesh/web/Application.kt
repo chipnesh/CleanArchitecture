@@ -1,6 +1,5 @@
 package me.chipnesh.web
 
-import kotlinext.js.toPlainObjectStripNull
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.web.account.User
@@ -10,20 +9,16 @@ import me.chipnesh.web.authentication.Session
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
 import me.chipnesh.web.authentication.sessionReducer
 import me.chipnesh.web.index.IndexComponent
-import me.chipnesh.web.index.IndexProps
-import me.chipnesh.web.index.rootMapper
+import me.chipnesh.web.index.indexMapper
 import me.chipnesh.web.quote.QuotaComponent
-import me.chipnesh.web.quote.QuotaProps
 import me.chipnesh.web.quote.quotaMapper
 import me.chipnesh.web.quote.quoteReducer
 import me.chipnesh.web.wrappers.hmr.ReloadableApplication
 import me.chipnesh.web.wrappers.redux.*
 import me.chipnesh.web.wrappers.redux.Redux.applyMiddleware
 import me.chipnesh.web.wrappers.router.*
-import me.chipnesh.web.wrappers.router.ReactRouterDom.withRouter
 import me.chipnesh.web.wrappers.router.ReactRouterRedux.routerMiddleware
 import me.chipnesh.web.wrappers.router.ReactRouterRedux.routerReducer
-import react.dom.div
 import react.dom.render
 import kotlin.browser.document
 
@@ -51,8 +46,8 @@ class Application : ReloadableApplication<State>() {
             provider(store) {
                 connectedRouter(history) {
                     switch {
-                        route("/", connect<IndexComponent, IndexProps>(rootMapper), true)
-                        route("/quota", connect<QuotaComponent, QuotaProps>(quotaMapper))
+                        route("/", connect<IndexComponent>(indexMapper), true)
+                        route("/quota", connect<QuotaComponent>(quotaMapper))
                     }
                 }
             }

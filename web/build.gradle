@@ -45,7 +45,7 @@ kotlinFrontend {
         contentPath = file('src/main/web')
         sourceMapEnabled = true
         publicPath = "/"
-//        proxyUrl = "http://localhost:8090/"
+        proxyUrl = "http://localhost:8090/"
         port = 7777
     }
 }

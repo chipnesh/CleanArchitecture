@@ -6,10 +6,10 @@ import me.chipnesh.web.wrappers.redux.Redux.createStoreInner
 import me.chipnesh.web.wrappers.router.ReactRouterDom.withRouter
 import react.*
 
-inline fun <reified T : RComponent<P, *>, reified P : RProps> RBuilder.connect(
-        crossinline connectFunction: (RClass<P>) -> ReactElement
+inline fun <reified T : RComponent<*, *>> RBuilder.connect(
+        crossinline connectFunction: (RClass<RProps>) -> ReactElement
 ): Any {
-    val type = T::class.js.unsafeCast<RClass<P>>()
+    val type = T::class.js.unsafeCast<RClass<RProps>>()
     return withRouter(connectFunction(type))
 }
 
