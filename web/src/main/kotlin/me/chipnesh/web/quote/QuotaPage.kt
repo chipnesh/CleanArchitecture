@@ -52,7 +52,7 @@ class QuotaPage : RComponent<QuotaProps, RState>() {
             }
             h2 { +props.quota }
             div {
-                raisedButton("Go to quota page") {
+                raisedButton("Go to main page") {
                     props.goToIndex()
                 }
             }

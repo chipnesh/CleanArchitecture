@@ -47,9 +47,10 @@ class Application : ReloadableApplication<State>() {
             materialUi {
                 reduxProvider(store) {
                     router(history) {
-                        pageSwitch {
-                            route("/", connect<IndexPage>(indexMapper), true)
-                            route("/quota", connect<QuotaPage>(quotaMapper))
+                        connect<IndexPage>(indexMapper) {
+                            pageSwitch {
+                                route("/quota", connect<QuotaPage>(quotaMapper))
+                            }
                         }
                     }
                 }

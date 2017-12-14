@@ -1,16 +1,18 @@
 package me.chipnesh.web.wrappers.redux
 
+import kotlinext.js.jsObject
 import me.chipnesh.web.wrappers.redux.ReactRedux.ProviderComponent
 import me.chipnesh.web.wrappers.redux.Redux.Store
 import me.chipnesh.web.wrappers.redux.Redux.createStoreInner
 import me.chipnesh.web.wrappers.router.ReactRouterDom.withRouter
 import react.*
 
-inline fun <reified T : RComponent<*, *>> RBuilder.connect(
-        crossinline connectFunction: (RClass<RProps>) -> ReactElement
-): Any {
+inline fun <reified T : React.Component<out RProps, *>> RBuilder.connect(
+        crossinline connectFunction: (RClass<RProps>) -> ReactElement,
+        noinline handler: RHandler<out RProps> = {}
+): ReactElement {
     val type = T::class.js.unsafeCast<RClass<RProps>>()
-    return withRouter(connectFunction(type))
+    return withRouter(child(connectFunction(type), jsObject {}, handler))
 }
 
 inline fun <reified S : Any, reified A : Any> createStore(noinline reducer: Reducer<Any, A>,
