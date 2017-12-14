@@ -22,7 +22,7 @@ compileKotlin2Js {
 
 kotlinFrontend {
     npm {
-        dependency "rmwc"
+        dependency "material-ui"
         dependency "axios"
         dependency ("react", "next")
         dependency ("react-dom", "next")

@@ -14,6 +14,7 @@ import me.chipnesh.web.quote.QuotaComponent
 import me.chipnesh.web.quote.quotaMapper
 import me.chipnesh.web.quote.quoteReducer
 import me.chipnesh.web.wrappers.hmr.ReloadableApplication
+import me.chipnesh.web.wrappers.material.materialUi
 import me.chipnesh.web.wrappers.redux.*
 import me.chipnesh.web.wrappers.redux.Redux.applyMiddleware
 import me.chipnesh.web.wrappers.router.*
@@ -43,16 +44,17 @@ class Application : ReloadableApplication<State>() {
         val middlewares = createMiddlewares()
         val store = createStore(reducers, state, middlewares)
         render(document.getElementById("root")) {
-            provider(store) {
-                connectedRouter(history) {
-                    switch {
-                        route("/", connect<IndexComponent>(indexMapper), true)
-                        route("/quota", connect<QuotaComponent>(quotaMapper))
+            materialUi {
+                provider(store) {
+                    connectedRouter(history) {
+                        switch {
+                            route("/", connect<IndexComponent>(indexMapper), true)
+                            route("/quota", connect<QuotaComponent>(quotaMapper))
+                        }
                     }
                 }
             }
         }
-
     }
 
     private fun createReducers(): Reducer<Any, Action> = combine(
