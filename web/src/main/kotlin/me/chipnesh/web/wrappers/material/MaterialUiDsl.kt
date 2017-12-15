@@ -8,7 +8,7 @@ import react.RHandler
 import react.RProps
 import react.ReactElement
 
-fun RBuilder.materialUi(handler: RHandler<RProps>) = child(Styles.MuiThemeProvider::class, handler)
+fun RBuilder.materialUI(handler: RHandler<RProps>) = child(Styles.MuiThemeProvider::class, handler)
 
 fun RBuilder.raisedButton(label: String, onClick: (Event) -> Unit): ReactElement {
     return child(RaisedButton::class) {

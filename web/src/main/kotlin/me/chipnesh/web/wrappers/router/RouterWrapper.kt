@@ -74,7 +74,7 @@ external object ReactRouterRedux {
     fun routerMiddleware(history: dynamic): Middleware
 
     @JsName("push")
-    fun goto(path: String): Any
+    fun navigate(path: String): Any
 }
 
 @JsModule("history")

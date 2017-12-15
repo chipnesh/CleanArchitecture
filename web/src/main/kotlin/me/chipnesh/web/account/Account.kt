@@ -3,6 +3,7 @@ package me.chipnesh.web.account
 import me.chipnesh.api.AccountApi
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.web.Action
+import me.chipnesh.web.Action.GetUser
 import me.chipnesh.web.State
 import me.chipnesh.web.account.User.Companion.ANON
 import me.chipnesh.web.wrappers.js.async
@@ -18,12 +19,10 @@ data class User(
     companion object {
         val ANON = User("", "anonymous", "")
     }
-
-    fun isAnon() = this == ANON
 }
 
 fun userReducer(user: User = ANON, action: Action) = when (action) {
-    is Action.GetUser -> {
+    is GetUser -> {
         val result = action.result
         when (result) {
             is AccountInfoResult.Success -> user.copy(result.login, result.login, result.email)
@@ -35,6 +34,6 @@ fun userReducer(user: User = ANON, action: Action) = when (action) {
 
 fun getUser(login: String) = thunk<State> {
     async { accounts.info(login) }.then { result ->
-        dispatch(Action.GetUser(result))
+        execute(GetUser(result))
     }
 }

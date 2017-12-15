@@ -3,7 +3,7 @@ package me.chipnesh.web.index
 import kotlinext.js.assign
 import me.chipnesh.web.State
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
-import me.chipnesh.web.wrappers.router.ReactRouterRedux.goto
+import me.chipnesh.web.wrappers.router.ReactRouterRedux.navigate
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -17,10 +17,10 @@ interface IndexProps : RProps {
 
 val indexMapper = connect<IndexProps, State>(
         null,
-        { dispatch, props ->
+        { execute, props ->
             assign(props) {
                 goToQuotaPage = {
-                    dispatch(goto("/quota"))
+                    execute(navigate("/quote"))
                 }
             }
         })

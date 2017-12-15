@@ -7,7 +7,7 @@ import me.chipnesh.web.wrappers.redux.Redux.createStoreInner
 import me.chipnesh.web.wrappers.router.ReactRouterDom.withRouter
 import react.*
 
-inline fun <reified T : React.Component<out RProps, *>> RBuilder.connect(
+inline fun <reified T : React.Component<out RProps, *>> RBuilder.connectRedux(
         crossinline connectFunction: (RClass<RProps>) -> ReactElement,
         noinline handler: RHandler<out RProps> = {}
 ): ReactElement {
@@ -37,13 +37,13 @@ fun <S : Any> thunk(f: Store<S>.() -> Any) = { dispatch: (Any) -> Any,
     val store = object : Store<S> {
         override fun replaceReducer(router: dynamic) = replaceReducer(router)
         override fun subscribe(block: dynamic) = subscribe(block)
-        override fun dispatch(action: dynamic) = dispatch(action)
+        override fun execute(action: dynamic) = dispatch(action)
         override fun getState() = getState()
     }
     store.f()
 }
 
-fun <S : Any> RBuilder.reduxProvider(store: Store<S>, handler: RHandler<RProps>) =
+fun <S : Any> RBuilder.redux(store: Store<S>, handler: RHandler<RProps>) =
         child(ProviderComponent::class) {
             attrs {
                 this.store = store

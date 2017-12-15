@@ -4,6 +4,7 @@ import me.chipnesh.api.AuthenticationApi
 import me.chipnesh.api.AuthenticationForm
 import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.web.Action
+import me.chipnesh.web.Action.Login
 import me.chipnesh.web.State
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
 import me.chipnesh.web.wrappers.js.async
@@ -17,12 +18,10 @@ data class Session(
     companion object {
         val EMPTY = Session("")
     }
-
-    fun isEmpty() = this == EMPTY
 }
 
 fun sessionReducer(session: Session = EMPTY, action: Action) = when (action) {
-    is Action.Login -> {
+    is Login -> {
         val result = action.result
         when (result) {
             is AuthenticationResult.Success -> session.copy(result.sessionId)
@@ -34,6 +33,6 @@ fun sessionReducer(session: Session = EMPTY, action: Action) = when (action) {
 
 fun login(login: String, password: String) = thunk<State> {
     async { sessions.authenticate(AuthenticationForm(login, password)) }.then { result ->
-        dispatch(Action.Login(result))
+        execute(Login(result))
     }
 }

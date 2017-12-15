@@ -7,7 +7,7 @@ import me.chipnesh.web.wrappers.js.inputValue
 import me.chipnesh.web.wrappers.material.raisedButton
 import me.chipnesh.web.wrappers.material.textField
 import me.chipnesh.web.wrappers.redux.ReactRedux.connect
-import me.chipnesh.web.wrappers.router.ReactRouterRedux.goto
+import me.chipnesh.web.wrappers.router.ReactRouterRedux.navigate
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -17,7 +17,7 @@ import react.dom.h1
 import react.dom.h2
 
 interface QuotaProps : RProps {
-    var quota: String
+    var quote: String
     var onGetQuote: (String) -> Unit
     var goToIndex: () -> Unit
 }
@@ -25,15 +25,15 @@ interface QuotaProps : RProps {
 val quotaMapper = connect<QuotaProps, State>(
         { state, props ->
             assign(props) {
-                quota = state.quota
+                quote = state.quote
             }
         },
-        { dispatch, props ->
+        { execute, props ->
             assign(props) {
                 onGetQuote = { word: String ->
-                    dispatch(getRandomQuote(word))
+                    execute(getRandomQuote(word))
                 }
-                goToIndex = { dispatch(goto("/")) }
+                goToIndex = { execute(navigate("/")) }
             }
         })
 
@@ -41,7 +41,7 @@ class QuotaPage : RComponent<QuotaProps, RState>() {
 
     override fun RBuilder.render() {
         div {
-            h1 { +"Chuck Norris joke:" }
+            h1 { +"Chuck Norris quote:" }
             div {
                 textField("theme") { event ->
                     if (event.enterPressed) {
@@ -50,7 +50,7 @@ class QuotaPage : RComponent<QuotaProps, RState>() {
                     }
                 }
             }
-            h2 { +props.quota }
+            h2 { +props.quote }
             div {
                 raisedButton("Go to main page") {
                     props.goToIndex()

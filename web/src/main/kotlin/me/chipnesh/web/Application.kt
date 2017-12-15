@@ -14,7 +14,7 @@ import me.chipnesh.web.quote.QuotaPage
 import me.chipnesh.web.quote.quotaMapper
 import me.chipnesh.web.quote.quoteReducer
 import me.chipnesh.web.wrappers.hmr.ReloadableApplication
-import me.chipnesh.web.wrappers.material.materialUi
+import me.chipnesh.web.wrappers.material.materialUI
 import me.chipnesh.web.wrappers.redux.*
 import me.chipnesh.web.wrappers.redux.Redux.applyMiddleware
 import me.chipnesh.web.wrappers.router.*
@@ -25,12 +25,12 @@ import kotlin.browser.document
 
 sealed class Action {
     data class Login(val result: AuthenticationResult) : Action()
-    data class GetQuota(val quota: String) : Action()
+    data class GetQuote(val quote: String) : Action()
     data class GetUser(val result: AccountInfoResult) : Action()
 }
 
 data class State(
-        val quota: String = "",
+        val quote: String = "",
         val user: User = ANON,
         val session: Session = EMPTY
 )
@@ -43,13 +43,14 @@ class Application : ReloadableApplication<State>() {
         val reducers = createReducers()
         val middlewares = createMiddlewares()
         val store = createStore(reducers, state, middlewares)
+
         render(document.getElementById("root")) {
-            materialUi {
-                reduxProvider(store) {
+            materialUI {
+                redux(store) {
                     router(history) {
-                        connect<IndexPage>(indexMapper) {
-                            pageSwitch {
-                                route("/quota", connect<QuotaPage>(quotaMapper))
+                        connectRedux<IndexPage>(indexMapper) {
+                            pageSwitcher {
+                                route("/quote", connectRedux<QuotaPage>(quotaMapper))
                             }
                         }
                     }
@@ -59,7 +60,7 @@ class Application : ReloadableApplication<State>() {
     }
 
     private fun createReducers(): Reducer<Any, Action> = combine(
-            "quota" to ::quoteReducer,
+            "quote" to ::quoteReducer,
             "user" to ::userReducer,
             "session" to ::sessionReducer,
             "router" to ::routerReducer

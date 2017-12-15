@@ -16,7 +16,7 @@ external object Redux {
         fun getState(): S
 
         @JsName("dispatch")
-        fun dispatch(action: Any): Any
+        fun execute(action: Any): Any
 
         @JsName("subscribe")
         fun subscribe(block: dynamic): dynamic

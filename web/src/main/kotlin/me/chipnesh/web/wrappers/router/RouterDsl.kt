@@ -7,7 +7,7 @@ import react.RProps
 
 fun RBuilder.hashRouter(handler: RHandler<RProps>) = child(ReactRouterDom.HashRouterComponent::class, handler)
 
-fun RBuilder.pageSwitch(handler: RHandler<RProps>) = child(ReactRouterDom.SwitchComponent::class, handler)
+fun RBuilder.pageSwitcher(handler: RHandler<RProps>) = child(ReactRouterDom.SwitchComponent::class, handler)
 
 fun RBuilder.route(path: String, component: dynamic, exact: Boolean = false) =
         child(ReactRouterDom.RouteComponent::class) {
