@@ -19,7 +19,7 @@ fun RBuilder.raisedButton(label: String, onClick: (Event) -> Unit): ReactElement
     }
 }
 
-fun RBuilder.textField(hintText: String, onKeyDown: (Event) -> Unit): ReactElement {
+fun RBuilder.textField(hintText: String, onKeyDown: (Event) -> Unit = {}): ReactElement {
     return child(TextField::class) {
         attrs {
             this.hintText = hintText

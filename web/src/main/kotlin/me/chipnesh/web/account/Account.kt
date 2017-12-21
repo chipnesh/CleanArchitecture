@@ -3,13 +3,17 @@ package me.chipnesh.web.account
 import me.chipnesh.api.AccountApi
 import me.chipnesh.api.AccountInfoResult
 import me.chipnesh.web.Action
-import me.chipnesh.web.Action.GetUser
 import me.chipnesh.web.State
 import me.chipnesh.web.account.User.Companion.ANON
+import me.chipnesh.web.account.UserAction.GetUser
 import me.chipnesh.web.wrappers.js.async
 import me.chipnesh.web.wrappers.redux.thunk
 
 val accounts = AccountApi()
+
+sealed class UserAction : Action {
+    data class GetUser(val result: AccountInfoResult) : UserAction()
+}
 
 data class User(
         val login: String,

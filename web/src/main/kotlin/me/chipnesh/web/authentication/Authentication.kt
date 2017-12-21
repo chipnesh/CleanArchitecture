@@ -4,8 +4,8 @@ import me.chipnesh.api.AuthenticationApi
 import me.chipnesh.api.AuthenticationForm
 import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.web.Action
-import me.chipnesh.web.Action.Login
 import me.chipnesh.web.State
+import me.chipnesh.web.authentication.LoginAction.Login
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
 import me.chipnesh.web.wrappers.js.async
 import me.chipnesh.web.wrappers.redux.thunk
@@ -20,6 +20,10 @@ data class Session(
     }
 }
 
+sealed class LoginAction : Action {
+    data class Login(val result: AuthenticationResult) : LoginAction()
+}
+
 fun sessionReducer(session: Session = EMPTY, action: Action) = when (action) {
     is Login -> {
         val result = action.result
@@ -31,7 +35,7 @@ fun sessionReducer(session: Session = EMPTY, action: Action) = when (action) {
     else -> session
 }
 
-fun login(login: String, password: String) = thunk<State> {
+fun loginUser(login: String, password: String) = thunk<State> {
     async { sessions.authenticate(AuthenticationForm(login, password)) }.then { result ->
         execute(Login(result))
     }

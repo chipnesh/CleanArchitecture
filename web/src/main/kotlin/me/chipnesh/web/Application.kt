@@ -1,12 +1,12 @@
 package me.chipnesh.web
 
-import me.chipnesh.api.AccountInfoResult
-import me.chipnesh.api.AuthenticationResult
 import me.chipnesh.web.account.User
 import me.chipnesh.web.account.User.Companion.ANON
 import me.chipnesh.web.account.userReducer
+import me.chipnesh.web.authentication.AuthenticationPage
 import me.chipnesh.web.authentication.Session
 import me.chipnesh.web.authentication.Session.Companion.EMPTY
+import me.chipnesh.web.authentication.authenticationMapper
 import me.chipnesh.web.authentication.sessionReducer
 import me.chipnesh.web.index.IndexPage
 import me.chipnesh.web.index.indexMapper
@@ -23,11 +23,7 @@ import me.chipnesh.web.wrappers.router.ReactRouterRedux.routerReducer
 import react.dom.render
 import kotlin.browser.document
 
-sealed class Action {
-    data class Login(val result: AuthenticationResult) : Action()
-    data class GetQuote(val quote: String) : Action()
-    data class GetUser(val result: AccountInfoResult) : Action()
-}
+interface Action
 
 data class State(
         val quote: String = "",
@@ -50,6 +46,7 @@ class Application : ReloadableApplication<State>() {
                     router(history) {
                         connectRedux<IndexPage>(indexMapper) {
                             pageSwitcher {
+                                route("/auth", connectRedux<AuthenticationPage>(authenticationMapper))
                                 route("/quote", connectRedux<QuotaPage>(quotaMapper))
                             }
                         }
